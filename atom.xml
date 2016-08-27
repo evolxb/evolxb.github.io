@@ -206,7 +206,7 @@
     <link href="http://guopp.me/2016/08/26/iOS-push-notification-part-three/"/>
     <id>http://guopp.me/2016/08/26/iOS-push-notification-part-three/</id>
     <published>2016-08-26T12:03:42.000Z</published>
-    <updated>2016-08-27T06:50:43.000Z</updated>
+    <updated>2016-08-27T08:10:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>苹果的远程推送通知服务(<code>APNs</code>)是远程通知的核心。这是一个强健并且高效的系统来为<code>iOS</code>，<code>watchOS</code>，<code>tvOS</code>设备推送消息。每台设备都和<code>APNs</code>建立了一个加密的可信<code>IP</code>链接，通过这个持久的链接来接收<code>APNs</code>发送给设备的消息。如果通过这个链接发送到设备后，相应的应用不在前台运行，系统会展示相应的警告框提示用户。</p>
 <p>你需要使用自己的服务器来为用户生成远程通知。这个服务器被称为<code>Provider</code>，它生成远程通知的数据并且决定什么时候推送这个远程通知。对于每个远程通知，<code>Provider</code>生成通知的<code>payload</code>然后使用<code>HTTP/2</code>的持久的加密链接发送到<code>APNs</code>，<code>APNs</code>负责把通知推送到用户设备。</p>
@@ -230,7 +230,13 @@
 <p>你的<code>Provider</code>通过<code>TLS</code>的对等网络建立可信连接到<code>APNs</code>。当<code>TLS</code>连接初始化后，你会得到<code>APNs</code>的服务端证书，然后在你这边验证证书。然后你发送你的<code>Provider</code>证书给<code>APNs</code>，<code>APNs</code>也会在它那边验证你的证书。当这个过程完成后，一个安全和可信的<code>TLS</code>就被合法的<code>Provider</code>建立了。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-26%20at%2019.52.08.png" alt=""></p>
 <h2 id="APNs到设备的可信连接"><a href="#APNs到设备的可信连接" class="headerlink" title="APNs到设备的可信连接"></a><code>APNs</code>到设备的可信连接</h2><p>每个设备都有一个设备证书和私钥。它们用来验证和<code>APNs</code>之间的连接。设备在激活的时候会获取这个证书和私钥然后把它们保存在钥匙串中。</p>
 <p>你不需要做任何事来建立<code>APNs</code>和设备之间的可信连接。<code>APNs</code>会通过<code>TLS</code>来建立到设备的可信连接。在这种情况下，设备初始化<code>TLS</code>连接，<code>APNs</code>返回服务器证书.设备验证这个证书然后发送自己的设备证书给<code>APNs</code>,<code>APNs</code>验证这个证书。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-26%20at%2020.01.19.png" alt=""></p>
-<h2 id="Token的生成和发送"><a href="#Token的生成和发送" class="headerlink" title="Token的生成和发送"></a><code>Token</code>的生成和发送</h2>]]></content>
+<h2 id="Token的生成和发送"><a href="#Token的生成和发送" class="headerlink" title="Token的生成和发送"></a><code>Token</code>的生成和发送</h2><p>设备想要收到远程通知必须先在系统中注册远程通知服务。当系统收到应用的注册请求时会把这个请求转发到<code>APNs</code>。<code>APNs</code>会使用设备的证书中的信息为应用生成一个唯一的设备<code>token</code>，然后加密这个<code>token</code>再把它返回给设备。系统通过<code>NSData</code>把设备<code>token</code>传递给应用。当收到这个设备<code>token</code>后，应用应该使用二进制或者十六进制把这个<code>token</code>发送给你的服务器。服务器不能把通知推送到没用这个<code>token</code>的设备。流程如下图：<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-27%20at%2016.00.07.png" alt=""></p>
+<blockquote>
+<p><code>APNs</code>的设备<code>token</code>长度是可变的。不要写死长度。</p>
+</blockquote>
+<p>下图显示设备<code>token</code>的生成和转发路径，还有上传到<code>Provider</code>的部分。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-27%20at%2016.04.15.png" alt=""></p>
+<h2 id="Token-Trust-Notification"><a href="#Token-Trust-Notification" class="headerlink" title="Token Trust (Notification)"></a>Token Trust (Notification)</h2><p>每个从<code>Provider</code>发送给<code>APNs</code>的远程通知都必须和<code>device token</code>一起发送。<code>APNs</code>使用它的<code>token key</code>解密通知中的<code>token</code>来确保<code>Provider</code>的合法性。然后使用<code>device token</code>中的<code>device ID</code>来决定推送的目标设备，最后把这个通知推送给目标设备。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-27%20at%2016.08.56.png" alt=""></p>
+]]></content>
     
     <summary type="html">
     
