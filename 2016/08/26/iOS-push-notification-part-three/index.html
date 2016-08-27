@@ -26,4 +26,14 @@
 </blockquote>
 <p>下图显示设备<code>token</code>的生成和转发路径，还有上传到<code>Provider</code>的部分。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-27%20at%2016.04.15.png" alt=""></p>
 <h2 id="Token-Trust-Notification"><a href="#Token-Trust-Notification" class="headerlink" title="Token Trust (Notification)"></a>Token Trust (Notification)</h2><p>每个从<code>Provider</code>发送给<code>APNs</code>的远程通知都必须和<code>device token</code>一起发送。<code>APNs</code>使用它的<code>token key</code>解密通知中的<code>token</code>来确保<code>Provider</code>的合法性。然后使用<code>device token</code>中的<code>device ID</code>来决定推送的目标设备，最后把这个通知推送给目标设备。<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-27%20at%2016.08.56.png" alt=""></p>
-</div></article></div></section><footer><div class="paginator"><a href="/2016/08/27/iOS-push-notification-part-one/" class="prev">PREV</a></div><div class="copyright"><p>© 2015 - 2016 <a href="http://guopp.me">guopp</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/08/27/iOS-push-notification-part-one/" class="prev">上一篇</a></div><div data-thread-key="2016/08/26/iOS-push-notification-part-three/" data-title="iOS push notification part three" data-url="http://guopp.me/2016/08/26/iOS-push-notification-part-three/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2015 - 2016 <a href="http://guopp.me">guopp</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>
