@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> iOS push notification part one · guopp</title><meta name="description" content="iOS push notification part one - guopp"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://guopp.me/atom.xml" title="guopp"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">iOS push notification part one</h1><div class="post-info">2016年8月27日</div><div class="post-content"><p>本地通知和远程通知是用户通知(<code>user notification</code>)的两种类型，它们不同于广播通知（由<code>NSNotificationCenter</code>类管理）和键值观察通知(<code>key - value obverse</code> )。即使<code>app</code>没有在前台运行，用户通知也能让用户知道有关于他们的新消息。该信息可以是简单的一条关于用户的消息，或者是即将发生的日程表事件，或者是远程服务器上新的数据。当操作系统呈现用户通知时，无论是来自本地的还是远程的通知，它们的展现形式都是一样的。他们可以显示警告信息，也可以在应用图标上显示<code>badge</code>，或者同时播放声音。</p>
+<a id="more"></a>
+<p>本地通知和远程通知是用户通知(<code>user notification</code>)的两种类型，它们不同于广播通知（由<code>NSNotificationCenter</code>类管理）和键值观察通知(<code>key - value obverse</code> )。即使<code>app</code>没有在前台运行，用户通知也能让用户知道有关于他们的新消息。该信息可以是简单的一条关于用户的消息，或者是即将发生的日程表事件，或者是远程服务器上新的数据。当操作系统呈现用户通知时，无论是来自本地的还是远程的通知，它们的展现形式都是一样的。他们可以显示警告信息，也可以在应用图标上显示<code>badge</code>，或者同时播放声音。</p>
+<p>当收到用户通知时，用户可以点击它来启动相关的应用程序，查看详细信息。他们也可以选择忽略该通知，在这种情况下，该应用不会被激活。</p>
+<p>本地和远程通知的根本目的是使应用程序不在前台运行时也能提醒用户有关于他们的新消息。例如–一封新邮件或即将到来的约会。本地通知和远程通知的本质区别很简单︰</p>
+<ul>
+<li>本地通知由一个应用程序在同一个设备上生成和传递。</li>
+<li>远程通知，也被称为推送通知，由你的服务器发送到苹果推送通知服务(<code>Apple Push Notification service</code>)，然后由<code>APNS</code>向设备推送通知。</li>
+</ul>
+<h1 id="本地和远程通知对用户的表现形式是一样的"><a href="#本地和远程通知对用户的表现形式是一样的" class="headerlink" title="本地和远程通知对用户的表现形式是一样的"></a>本地和远程通知对用户的表现形式是一样的</h1><p>用户可以通过下面的几种方式得到通知：</p>
+<ul>
+<li>屏幕上的<code>alert</code>或<code>banner</code></li>
+<li>应用程序的图标的<code>badge</code></li>
+<li>伴随<code>alert</code>，<code>banner</code>，<code>badge</code>的声音</li>
+</ul>
+<p>从用户的角度看本地和远程的通知表明在应用程序里面有用户感兴趣的东西。</p>
+<p>例如，有一个管理待办事项应用程序，在列表中的每个项目都有一个必须完成的项目的日期和时间。用户可以要求应用程序在该日期到来前的一个特定的时间间通知它。要实现此行为，应用程序生成一个关于这个日期和时间的本地通知。该应用选择指定一个<code>badge（1）</code>和播放一个声音，而不是显示一个<code>alert</code>。届时，iOS设备播放的声音，在应用程序的图标的右上角显示一个<code>1</code>。如下图：<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/Screen%20Shot%202016-08-17%20at%2015.08.28.png" alt=""></p>
+<p>用户听到的声音和看到<code>badge</code>，并启动应用程序，查看待办事项。用户指定设备上的哪些<code>app</code>可以发送通知，他们也可以对某些<code>app</code>启用或者禁用某些通知类型（即<code>alert</code>,<code>badge</code>,<code>sound</code>）。</p>
+<h1 id="本地和远程通知对于app来说是不一样的"><a href="#本地和远程通知对于app来说是不一样的" class="headerlink" title="本地和远程通知对于app来说是不一样的"></a>本地和远程通知对于<code>app</code>来说是不一样的</h1><p>当你的应用程序是在前台运行时，UIKit直接把本地和远程通知传递到应用程序的委托对象，而不显示任何系统UI。对于收到的本地通知， UIKit调用<code>application：didReceiveLocalNotification：</code>方法,而对于远程通知则调用<code>application：didReceiveRemoteNotification：fetchCompletionHandler：</code>方法。使用提供的通知字典来更新你的应用。因为你的应用程序正在运行，你可以悄悄的更新你的用户界面，让用户知道有新的信息。</p>
+<p>当你的应用程序必须启动以接收通知，<code>UIKit</code>将包括<code>UIApplicationLaunchOptionsLocalNotificationKey</code>或<code>UIApplicationLaunchOptionsRemoteNotificationKey</code>的键的词典传递给你的应用程序委托的<code>application：willFinishLaunchingWithOptions：</code>和<code>application：didFinishLaunchingWithOptions：</code>方法。这些键的存在可以让你知道有通知数据等待被处理，并给你一个机会，以适当地配置你的应用程序的界面。你不需要在这些方法中处理通知。在你的应用程序运行后，UIKit调用你的应用程序委托的其他方法，如<code>application：didReceiveLocalNotification</code>方法，来让你处理通知数据。哪个方法被调用取决于你的实现和用户与系统<code>UI</code>的交互。</p>
+<p>当你的应用程序正在运行，但不是最前端，<code>UIKit</code>显示系统<code>UI</code>，然后传递结果到后台运行的<code>app</code>。和正在运行的<code>app</code>类似，<code>UIKit</code>调用相关的方法来处理通知。如果无法在后台交付通知数据，<code>UIKit</code>的等待你的应用程序下一次运行的时候再传递通知数据。</p>
+<h1 id="本地通知"><a href="#本地通知" class="headerlink" title="本地通知"></a>本地通知</h1><p>本地通知非常适合应用与基于时间的行为，如日历和待办事项列表的应用程序。在后台长时间运行的程序而被<code>iOS</code>系统限制的<code>app</code>可能会发现本地通知也有用。例如，依赖于服务器消息或数据的应用程序可以轮询服务器传人的新消息当<code>app</code>在后台运行时;如果有新消息或更新可以下载，它们就可以处理需要的数据，并在适当的时候通知用户。</p>
+<p>本地通知是<code>UILocalNotification</code>或<code>NSUserNotification</code>的实列并有三种不用类型的属性：</p>
+<ul>
+<li><strong>Scheduled time</strong><br>您必须指定操作系统传递通知的日期和时间;这个被称为<code>fire date</code>。可以限定<code>fire date</code> 的时区，这样当用户旅行时系统可以调整触发时间。你也可以要求系统以一个固定的间隔（周，月，等待）来触发通知。</li>
+<li><strong>Notification type</strong><br>这些属性包括警报消息，默认的动作按钮的标题，应用程序图标<code>badge</code>数量，要播放的声音，以及1<code>iOS8</code>和更高版本的自定义动作的类别。</li>
+<li><strong>Custom data</strong><br>本地通知包含的用户信息字典的自定义数据。</li>
+</ul>
+<p>设备上的每个应用程序被限制为最多64个本地通知。系统会丢弃超过此限制的通知，只保留最近要触发的64个通知。重复通知被视为一个单个的通知。</p>
+<h1 id="远程通知"><a href="#远程通知" class="headerlink" title="远程通知"></a>远程通知</h1><p>iOS或Mac应用程序通常是基于客户端/服务器模式的较大的应用程序的一部分。该应用程序的客户端安装在设备或计算机上;该应用的服务器侧具有向它的客户端应用提供数据的主要功能，并且因此被称为提供者(<code>Provider</code>)。客户端应用程序会定期与服务器连接并下载正在等待它的任何数据。电子邮件和社交网络应用程序是该客户端/服务器模型的例子。</p>
+<p>但是，如果应用程序没有连接到提供者，甚至当应用程序正在在设备或计算机上运行时，提供者有新的数据等它下载？它是如何知道这个等待数据？远程通知是解决这一困境的方法。远程通知是一个提供者传递给设备的操作系统的短消息;操作系统可以通知客户端的应用程序，有数据要下载，有新的消息要浏览，等等。如果用户启用该功能（在<code>iOS</code>）并且该应用正确注册，通知被传递到操作系统和应用程式。苹果推送通知服务（<code>APNs</code>）是远程通知功能的主要技术。</p>
+<p>远程通知服务和桌面系统上的后台应用程序目的差不多，但没有额外的开销。通知会在当前没有运行，或者在iOS中的情况下，没有运行在前台的应用中发生。操作系统代表应用程序接收远程通知，并提醒用户。然后，如果用户启动应用程序，它会下载服务器提供的数据。如果在应用程序正在运行时通知被传递到<code>app</code>，应用程序可以选择直接处理通知。</p>
+<p>正如它的名字所暗示的，苹果推送通知服务使用一个远程的设计以传递远程通知到设备和计算机。推式设计(<code>push design</code>)不同于它的反面拉式的设计(<code>pull design</code>)，该通知的收件人被动侦听更新，而不是积极地轮询。<code>APNs</code>使用持久<code>IP</code>连接来实现远程通知。</p>
+<p>大多数远程通知包含一个<code>payload</code>：一个<code>JSON</code>字典包含已经定义好的如何通知用户的<code>APNs</code>属性。<code>payload</code>越小，通知的性能越好。虽然你可以定义自定义属性，但是不要用远程通知机制来传输数据。远程通知是尽最大努力交付，这具有很高的成功率，但不能保证每次都成功。</p>
+<p>当一台设备不在线时，<code>APNs</code>保留上次从该设备上的应用程序的提供者收到的通知。如果该设备上线（联网），<code>APNs</code>会把存储的通知推送到设备。运行<code>iOS</code>的设备接收通过<code>Wi-Fi</code>和蜂窝连接的远程通知;一台运行OS X通过<code>Wi-Fi</code>和以太网连接，接收远程通知。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/08/27/iOS-push-notification-part-two/" class="prev">PREV</a><a href="/2016/08/26/iOS-push-notification-part-three/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2016 <a href="http://guopp.me">guopp</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>
