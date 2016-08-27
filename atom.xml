@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2016-08-27T11:11:30.000Z</updated>
+  <updated>2016-08-27T11:12:32.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -20,9 +20,11 @@
     <link href="http://guopp.me/2016/08/27/iOS-push-notification-part-four/"/>
     <id>http://guopp.me/2016/08/27/iOS-push-notification-part-four/</id>
     <published>2016-08-27T11:10:36.000Z</published>
-    <updated>2016-08-27T11:11:30.000Z</updated>
+    <updated>2016-08-27T11:12:32.000Z</updated>
     
     <content type="html"><![CDATA[<p>每个远程通知都包含一个<code>payload</code>。<code>payload</code>包含系统要显示给用户的信息也包括你自定义的数据。<code>payload</code>的最大长度取决以什么<code>API</code>来发送它。如果使用<code>HTTP/2</code>的<code>API</code>，那么<code>payload</code>的最大长度是4096字节，如果使用传统的二进制方式，那么最大长度是2048字节。<code>APNs</code>会拒绝超过最大长度的任何通知。</p>
+<a id="more"></a>
+<p>每个远程通知都包含一个<code>payload</code>。<code>payload</code>包含系统要显示给用户的信息也包括你自定义的数据。<code>payload</code>的最大长度取决以什么<code>API</code>来发送它。如果使用<code>HTTP/2</code>的<code>API</code>，那么<code>payload</code>的最大长度是4096字节，如果使用传统的二进制方式，那么最大长度是2048字节。<code>APNs</code>会拒绝超过最大长度的任何通知。</p>
 <h1 id="payload-key"><a href="#payload-key" class="headerlink" title="payload key"></a>payload key</h1><p>每个通知都是一个<code>JSON</code>字典对象。这个字典必须包括一个以<code>aps</code>为键的字典。<code>aps</code>字典必须包括下面一个或多个指定通知类型的属性：</p>
 <ul>
 <li>一个要显示给用户的<code>alert</code>消息</li>
@@ -107,7 +109,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;每个远程通知都包含一个&lt;code&gt;payload&lt;/code&gt;。&lt;code&gt;payload&lt;/code&gt;包含系统要显示给用户的信息也包括你自定义的数据。&lt;code&gt;payload&lt;/code&gt;的最大长度取决以什么&lt;code&gt;API&lt;/code&gt;来发送它。如果使用&lt;code&gt;
+      &lt;p&gt;每个远程通知都包含一个&lt;code&gt;payload&lt;/code&gt;。&lt;code&gt;payload&lt;/code&gt;包含系统要显示给用户的信息也包括你自定义的数据。&lt;code&gt;payload&lt;/code&gt;的最大长度取决以什么&lt;code&gt;API&lt;/code&gt;来发送它。如果使用&lt;code&gt;HTTP/2&lt;/code&gt;的&lt;code&gt;API&lt;/code&gt;，那么&lt;code&gt;payload&lt;/code&gt;的最大长度是4096字节，如果使用传统的二进制方式，那么最大长度是2048字节。&lt;code&gt;APNs&lt;/code&gt;会拒绝超过最大长度的任何通知。&lt;/p&gt;
     
     </summary>
     
