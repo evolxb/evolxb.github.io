@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2016-08-27T06:50:05.000Z</updated>
+  <updated>2016-08-27T11:11:30.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -14,6 +14,105 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>iOS-push-notification-part-four</title>
+    <link href="http://guopp.me/2016/08/27/iOS-push-notification-part-four/"/>
+    <id>http://guopp.me/2016/08/27/iOS-push-notification-part-four/</id>
+    <published>2016-08-27T11:10:36.000Z</published>
+    <updated>2016-08-27T11:11:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>每个远程通知都包含一个<code>payload</code>。<code>payload</code>包含系统要显示给用户的信息也包括你自定义的数据。<code>payload</code>的最大长度取决以什么<code>API</code>来发送它。如果使用<code>HTTP/2</code>的<code>API</code>，那么<code>payload</code>的最大长度是4096字节，如果使用传统的二进制方式，那么最大长度是2048字节。<code>APNs</code>会拒绝超过最大长度的任何通知。</p>
+<h1 id="payload-key"><a href="#payload-key" class="headerlink" title="payload key"></a>payload key</h1><p>每个通知都是一个<code>JSON</code>字典对象。这个字典必须包括一个以<code>aps</code>为键的字典。<code>aps</code>字典必须包括下面一个或多个指定通知类型的属性：</p>
+<ul>
+<li>一个要显示给用户的<code>alert</code>消息</li>
+<li>一个要在应用的<code>icon</code>上显示的数字</li>
+<li>一个要播放的声音</li>
+</ul>
+<p>当远程通知被传递到设备时，相应的应用程序并没有在前台运行，那么系统会以<code>alert message</code>,<code>badge icon</code>，播放声音来提醒用户。而如果相应的应用程序正在前台运行，那么系统会把通知封装成<code>NSDictionary</code>传递给应用的<code>delegate</code>。</p>
+<p><code>Provider</code>可以在<code>payload</code>中指定自定义的数据。但是自定义的数据必须使用<code>JSON</code>结构而且只能是原始类型：<code>dictionary</code>,<code>array</code>,<code>string</code>,<code>number</code>,<code>Boolean</code>。你不能在<code>payload</code>中包含任何用户信息和敏感数据。通知应该仅仅只是用来设置一些上下文信息或者内部标示。例如：在一个即时通信应用中，<code>payload</code>中可以包含自定义的用户对话标识符或者<code>Provider</code>发送通知时的时间戳。任何和警告消息对应的动作不应该是破坏性的–比如删除设备上的数据。</p>
+<blockquote>
+<p>重要：通知发送给设备是<code>尽最大努力</code>,但是并不是保证一定送达。通知并不是要发送数据给你的应用，它只是<code>通知</code>你的用户应用里有新的数据。</p>
+</blockquote>
+<p>下面的表格展示了<code>aps</code>中可用的键和它们期望的值。</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value type</th>
+<th>comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alert</code></td>
+<td>字符串或字典</td>
+<td>如果<code>aps</code>字典中包括这个属性，系统会根据用户的设置显示一个标准的<code>alert</code>或者是<code>banner</code>。<br>你可用给这个属性设置为字符串或者是字典: <ul><li>如果是字符串，那么这个字符串会显示为警告的提示消息，并且包含两个按钮：关闭和查看。如果用户点击查看，应用会启动。</li><li>如果是字典，那么会根据字典中的属性有相应的显示。（下表中有详细解释）</li></ul></td>
+</tr>
+<tr>
+<td><code>badge</code></td>
+<td>数字</td>
+<td>显示在应用<code>icon</code>上的数字。如果没有这个属性，应用<code>icon</code>上的数字不会改变。设置这个属性为<code>0</code>来移除<code>icon</code>上的<code>badge</code>。</td>
+</tr>
+<tr>
+<td><code>sound</code></td>
+<td>字符串</td>
+<td>在应用的<code>bundle</code>中或者<code>Library/Sounds</code>目录中以这个作为文件名的声音会作为警告声音播放。如果声音文件不存在或者值是<code>default</code>,那么默认的声音会播放。</td>
+</tr>
+<tr>
+<td><code>content-available</code></td>
+<td>数字</td>
+<td><code>aps</code>字典中包括这个键并且值是<code>1</code>,表示有新的内容。而且如果应用在后台被启动或恢复，那么<code>application:didReceiveRemoteNotification:fetchCompletionHandler:</code>方法会调用。</td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td>字符串</td>
+<td>这个键值对表示你创建的自定义的动作的<code>UIMutableUserNotificationCategory</code>的标识符(<code>identifier</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>alert</code>字典的键和期望的值<br>| key | value type | comment |<br>| — | —-       | —–   |<br>| <code>title</code> | <code>string</code> | 一个简短的字符串来说明通知的目的。|<br>| <code>body</code> | <code>string</code> | 警告的消息 |<br>| <code>title-loc-key</code> | <code>string</code>或者<code>null</code> | <code>title</code>的本地化字符串，可用使用<code>%@</code>,<code>%n$@</code>来从<code>title-loc-args</code>中添加格式化字符串.|<br>| <code>title-loc-args</code> | <code>array of strings</code> or <code>null</code> | 出现在<code>title-loc-key</code>中的格式化字符串 |<br>| <code>action-loc-key</code> | <code>string</code> or <code>null</code> | 替换标准<code>Close</code>和<code>View</code>的警告框的<code>View</code>为本地化字符串。|<br>| <code>loc-key</code> | <code>string</code> | <code>alert-message</code> 的本地化字符串，可以使用<code>%@</code>,<code>%n$@</code>从<code>loc-args</code>中格式化字符串|<br>| <code>loc-args</code> | <code>array of strings</code> | <code>loc-key</code>中的格式化字符串 |<br>| <code>launch-image</code> | <code>string</code> | 用户点击动作按钮或者滑动通知启动应用时，使用这个文件的启动图片。如果没有指定这个属性，系统会使用上次的应用快照或者<code>Info.plist</code>中<code>UILaunchImageFile</code>的图片或<code>Default.png</code>作为启动图片。 |</p>
+<blockquote>
+<p>如果你要设备一个警告消息并且有关闭和查看按钮的警告框，那么直接设置<code>alert</code>为字符串。不要设置<code>alert</code>为一个只包含<code>body</code>属性的字典。</p>
+</blockquote>
+<h1 id="Configuring-a-Silent-Notification"><a href="#Configuring-a-Silent-Notification" class="headerlink" title="Configuring a Silent Notification"></a>Configuring a Silent Notification</h1><p><code>aps</code>也可以包括<code>content-available</code>属性。<code>content-available</code>的值为<code>1</code>，那么这个远程通知是一个静默的通知。当一个静默的通知被传递到设备，iOS在后台唤醒你的应用，这样你的应用就可以从你的服务器获取新的数据或者在后台处理信息。用户不会从静默通知中知道有新的数据或者已经改变的信息，但是当他们下次打开应用时他们才会知道这些新的数据或者已经改变的信息。</p>
+<p>对于静默的通知，要确保<code>aps</code>字典中没有<code>alert</code>,<code>sound</code>或者<code>badge</code>属性。如果不这样做，错误配置的通知可能不会被传递到后台的应用，而是直接以警告框的形式显示给用户。</p>
+<h2 id="Localized-Formatted-Strings"><a href="#Localized-Formatted-Strings" class="headerlink" title="Localized Formatted Strings"></a>Localized Formatted Strings</h2><p>你可以通过两种方式显示本地化的警告信息：</p>
+<ul>
+<li>可以在服务器上直接发送已经做好本地化的通知给设备。这需要设备把当前的语言传送给服务器。</li>
+<li>客户端应用可以在本地存储好已经翻译为多个语言的本地化字符串文件。然后使用<code>aps</code>字典中的<code>loc-key</code>和<code>loc-args</code>来根据当前设备语言本地化警告信息。然后显示给用户。</li>
+</ul>
+<p>下面是第二种方式的详细解释：（第一种前面几篇文章已经讨论过）<br>应用程序可以为它所支持的语言国际化所有的资源包括图片，声音，文字，然后把这些资源都放在应用程序的<code>bundle</code>的一个以语言代码和<code>.lproj</code>后缀结尾的子目录中（比如<code>fr.lproj</code>）。本地化的字符串是保存在<code>Localizable.strings</code>文件中。这个文件中的实体都是键值对，值也可以使用字符串参数格式化。当应用程序需要特定的资源时，例如一个本地化的字符串，它从用户的当前语言对应的目录中查找。例如，如果用户的当前语言是法语，那么对应的警告信息的本地化字符串就会从<code>fr.lproj</code>目录中的<code>Localizable.strings</code>文件中查找。（通过<code>NSLocalizedString</code>这个宏来请求本地化的字符串）</p>
+<blockquote>
+<p>注意，这也是<code>action-loc-key</code>属性所执行的步骤。它也会在<code>LocalizedString.strings</code>文件中查找对应的本地化字符串。iOS使用这个字符串来显示警告框右边的按钮的标题。(<code>action</code>按钮)</p>
+</blockquote>
+<p>为了清楚的说明这个步骤，让我们看看下面的例子。<code>Provider</code>提供了下面的字典作为<code>alert</code>的值:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;alert&quot;: &#123;</div><div class="line">    &quot;loc-key&quot;: &quot;GAME_PLAY_REQUEST_FORMAT&quot;,</div><div class="line">    &quot;loc-args&quot;: [&quot;Jena&quot;, &quot;Frank&quot;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当用户收到这个通知后，它使用<code>GAME_PLAY_REQUEST_FORMAT</code>这个键从相应<code>.lproj</code>目录中的<code>Localizable.strings</code>文件中查找对应的字符串值。假设当前的<code>Localizable.strings</code>文件中有一个这样的实体：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;GAME_PLAY_REQUEST_FORMAT&quot;=&quot;%@ and %@ have invited you to play Monopoly&quot;;</div></pre></td></tr></table></figure></p>
+<p>设备显示<code>Jenna and Frank have invited you to play Monopoly</code>这个警告消息。</p>
+<p>除了<code>%@</code>,你也可以使用<code>%n$%@</code>来用指定位置的字符串来替换格式符。<code>n</code>表示使用<code>loc-args</code>中第<code>n</code>个元素来替换（索引从<code>1</code>开始）。因此如果<code>Localizable.strings</code>文件中的实体是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;GAME_PLAY_REQUEST_FORMAT&quot; = &quot;%2$@ and %1$@ have invited you to play Monopoly&quot;;</div></pre></td></tr></table></figure></p>
+<p>设备会显示<code>Frank and Jenna have invited you to play Monopoly</code>警告消息。</p>
+<blockquote>
+<p>注意：只有当你必须使用<code>alert</code>字典时才这样做。这些属性的值，特别是当它们是很长的字符串时，相比于性能会占用更多的带宽。很多的应用都不需要这些属性，应为消息最初都来自用户。</p>
+</blockquote>
+<h2 id="Examples-of-JSON-Payloads"><a href="#Examples-of-JSON-Payloads" class="headerlink" title="Examples of JSON Payloads"></a>Examples of JSON Payloads</h2><p>下面例子的通知中的<code>payload</code>都是为了说明上面表格中各种属性的使用。<code>acme</code>属性是自定义的数据。</p>
+<blockquote>
+<p>注意： 下面例子都是使用空格和换行符来增加可读性。但是在实践应用中要避免空格和换行，这会减小<code>payload</code>的大小，增加网络的性能。</p>
+</blockquote>
+<p><strong><code>Example 1</code></strong>。下面的<code>aps</code>字典中有一个简单的警报字符串和两个默认的按钮（<code>Close</code>和<code>View</code>）。这个<code>payload</code>也包含自定义的数组属性.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;aps&quot;: &#123; &quot;alert&quot;: &quot;Message received from Bob&quot; &#125;,</div><div class="line">    &quot;acme2&quot;: [ &quot;bang&quot;, &quot;whiz&quot; ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>Example 2</code></strong>。在这个例子中使用<code>aps</code>字典显示了一个警告消息并且左边是<code>Close</code>按钮，右边是本地化的<code>action</code>按钮。在这个例子中<code>PLAY</code>是本地化字符串的键用来从<code>Localizable.strings</code>文件中获取对应的本地化字符串值。<code>aps</code>字典也包括应用的<code>icon</code>的<code>badge</code>数字。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;aps&quot;: &#123;</div><div class="line">        &quot;alert&quot;: &#123;</div><div class="line">            &quot;title&quot;: &quot;Game Request&quot;,</div><div class="line">            &quot;body&quot;: &quot;Bob wants to play poker&quot;,</div><div class="line">            &quot;action-loc-key&quot;: &quot;PLAY&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;badge&quot;: 5</div><div class="line">    &#125;,</div><div class="line">    &quot;acme1&quot;: &quot;bar&quot;,</div><div class="line">    &quot;acme2&quot;: [&quot;bang&quot;, &quot;whiz&quot;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>Example 3</code></strong>。这个例子指定设备要显示一个带两个按钮的警告框（<code>Close</code>和<code>View</code>）。它也会在应用程序的<code>icon</code>上显示数字<code>9</code>，而且会播放声音当警告框出现时。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;aps&quot;: &#123;</div><div class="line">        &quot;alert&quot;: &quot;You got your emails&quot;,</div><div class="line">        &quot;badge&quot;: 9,</div><div class="line">        &quot;sound&quot;: &quot;bingbong.aiff&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;acme1&quot;: &quot;bar&quot;,</div><div class="line">    &quot;acme2&quot;: 42</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>Example 4</code></strong>。这个例子使用<code>loc-key</code>和<code>loc-args</code>来显示一个本地化的警告消息。它也包括自定义的警报声音和自定义的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;aps&quot;: &#123;</div><div class="line">        &quot;alert&quot;: &#123;</div><div class="line">            &quot;loc-key&quot;: &quot;GAME_PLAY_REQUEST_FORMAT&quot;,</div><div class="line">            &quot;loc-args&quot;: [ &quot;Jenna&quot;, &quot;Frank&quot; ]</div><div class="line">        &#125;,</div><div class="line">        &quot;sound&quot;: &quot;chime.aiff&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;acme&quot;: &quot;foo&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><code>Example 5</code></strong>。这个例子使用<code>category</code>键来指定一组通知动作.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;aps&quot;: &#123;</div><div class="line">        &quot;category&quot;: &quot;NEW_MESSAGE_CATEGORY&quot;,</div><div class="line">        &quot;alert&quot;: &#123;</div><div class="line">            &quot;body&quot;: &quot;Acme message received from Johnny Appleseed&quot;,</div><div class="line">            &quot;action-loc-key&quot;: &quot;VIEW&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;badge&quot;: 3,</div><div class="line">        &quot;sound&quot;: &quot;chime.aiff&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;acme-account&quot;: &quot;jane.applesee@apple.com&quot;,</div><div class="line">    &quot;acme-message&quot;: &quot;message123456&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;每个远程通知都包含一个&lt;code&gt;payload&lt;/code&gt;。&lt;code&gt;payload&lt;/code&gt;包含系统要显示给用户的信息也包括你自定义的数据。&lt;code&gt;payload&lt;/code&gt;的最大长度取决以什么&lt;code&gt;API&lt;/code&gt;来发送它。如果使用&lt;code&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>iOS push notification part two</title>
