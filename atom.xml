@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2016-08-27T11:15:09.000Z</updated>
+  <updated>2017-01-11T09:05:47.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>汇编学习笔记(一)</title>
+    <link href="http://guopp.me/2017/01/11/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80/"/>
+    <id>http://guopp.me/2017/01/11/汇编学习笔记-一/</id>
+    <published>2017-01-11T09:04:56.000Z</published>
+    <updated>2017-01-11T09:05:47.000Z</updated>
+    
+    <content type="html"><![CDATA[<ul>
+<li>因为机器码晦涩难懂，所以发明了汇编语言来编写机器程序。</li>
+<li>汇编语言的主体是汇编指令。有以下 3 类指令：<ul>
+<li>汇编指令： 机器码的助记符，有对应的机器码</li>
+<li>伪指令：没有对应的机器码，由编译器执行，计算机并不执行</li>
+<li>其他符号：如 <code>+</code> ,<code>-</code>,<code>*</code>,<code>-</code> 等，由编译器识别，没有对应的机器码</li>
+</ul>
+</li>
+<li>汇编语言的核心是汇编指令。</li>
+</ul>
+<p>汇编语言的使用流程：</p>
+<ul>
+<li>程序员 + 汇编指令 —&gt; 汇编源程序 —&gt; 编译器 —&gt; 机器码 —&gt; 计算机执行。</li>
+</ul>
+<h4 id="cpu-执行程序流程"><a href="#cpu-执行程序流程" class="headerlink" title="cpu 执行程序流程"></a>cpu 执行程序流程</h4><ul>
+<li>先由父程序把子程序装载到内存<ul>
+<li>物理设备对应到逻辑内存空间</li>
+<li>通过总线读取写入数据</li>
+</ul>
+</li>
+<li>保存父程序寄存器状态</li>
+<li>修改寄存器<ul>
+<li>指令寄存器，数据段寄存器，栈段寄存器</li>
+</ul>
+</li>
+<li>cpu 执行子程序</li>
+</ul>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器是cpu的主要部件，程序主要是通过改变寄存器中的内容来实现对cpu的控制。</p>
+<h3 id="通用寄存器"><a href="#通用寄存器" class="headerlink" title="通用寄存器"></a>通用寄存器</h3><ul>
+<li>AX，BX，CX，DX（寄存器位数和cpu位数有关）</li>
+<li>8086cpu 上的寄存器都可以分为两个独立的8位寄存器使用：<ul>
+<li>AX —&gt; AH,AL</li>
+<li>BX —&gt; BH,BL</li>
+<li>CX —&gt; CH,CL</li>
+<li>DX —&gt; DH,DL</li>
+</ul>
+</li>
+</ul>
+<h3 id="物理地址-内存地址"><a href="#物理地址-内存地址" class="headerlink" title="物理地址(内存地址)"></a>物理地址(内存地址)</h3><p>8086cpu使用两个16位地址来合成20位地址。<strong>物理地址=段地址x16+偏移地址</strong></p>
+<h3 id="段寄存器"><a href="#段寄存器" class="headerlink" title="段寄存器"></a>段寄存器</h3><ul>
+<li>CS，DS，SS，ES</li>
+</ul>
+<h3 id="CS-和-IP"><a href="#CS-和-IP" class="headerlink" title="CS 和 IP"></a><code>CS</code> 和 <code>IP</code></h3><ul>
+<li>CS: 代码段寄存器</li>
+<li>IP: 指令指针寄存器</li>
+<li>在8086机中，任意时刻，cpu将 CS:IP 中的内容当作指令执行。</li>
+</ul>
+<h3 id="转移指令"><a href="#转移指令" class="headerlink" title="转移指令"></a>转移指令</h3><p><code>jmp</code> 段地址：便宜地址 : 使用<code>段地址</code>修改CS，使用<code>偏移地址</code>修改IP</p>
+<p><code>jmp</code> 某一合法寄存器: 用寄存器中的值修改IP.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;因为机器码晦涩难懂，所以发明了汇编语言来编写机器程序。&lt;/li&gt;
+&lt;li&gt;汇编语言的主体是汇编指令。有以下 3 类指令：&lt;ul&gt;
+&lt;li&gt;汇编指令： 机器码的助记符，有对应的机器码&lt;/li&gt;
+&lt;li&gt;伪指令：没有对应的机器码，由编译器执行，计算机并不执行&lt;/li
+    
+    </summary>
+    
+    
+      <category term="assembly" scheme="http://guopp.me/tags/assembly/"/>
+    
+  </entry>
   
   <entry>
     <title>iOS-push-notification-part-four</title>
