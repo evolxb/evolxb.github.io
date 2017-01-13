@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-01-12T07:40:30.000Z</updated>
+  <updated>2017-01-13T03:13:42.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -14,6 +14,134 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>汇编学习(二)</title>
+    <link href="http://guopp.me/2017/01/13/%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0-%E4%BA%8C/"/>
+    <id>http://guopp.me/2017/01/13/汇编学习-二/</id>
+    <published>2017-01-13T03:12:15.000Z</published>
+    <updated>2017-01-13T03:13:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+<th>格式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a(Assemble)</td>
+<td>逐行汇编</td>
+<td></td>
+</tr>
+<tr>
+<td>c(Compare)</td>
+<td>比较两内存块</td>
+<td></td>
+</tr>
+<tr>
+<td>d(Dump)</td>
+<td>内存16进制显示</td>
+<td></td>
+</tr>
+<tr>
+<td>e(Enter)</td>
+<td>修改内存字节</td>
+<td></td>
+</tr>
+<tr>
+<td>r(Register)</td>
+<td>显示和修改寄存器</td>
+<td></td>
+</tr>
+<tr>
+<td>u(Unassemble)</td>
+<td>反汇编 — 将内存中的机器指令翻译成汇编</td>
+<td></td>
+</tr>
+<tr>
+<td>t(Trace)</td>
+<td>跟踪执行</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;解释&lt;/th&gt;
+&lt;th&gt;格式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;a(Assemble)&lt;/td&gt;
+&lt;td&gt;逐行汇编&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;c(Compare)&lt;/td&gt;
+&lt;td&gt;比较两内存块&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;d(Dump)&lt;/td&gt;
+&lt;td&gt;内存16进制显示&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;e(Enter)&lt;/td&gt;
+&lt;td&gt;修改内存字节&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;r(Register)&lt;/td&gt;
+&lt;td&gt;显示和修改寄存器&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;u(Unassemble)&lt;/td&gt;
+&lt;td&gt;反汇编 — 将内存中的机器指令翻译成汇编&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;t(Trace)&lt;/td&gt;
+&lt;td&gt;跟踪执行&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>汇编学习笔记(一)</title>
