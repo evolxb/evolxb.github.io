@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-01-13T03:13:42.000Z</updated>
+  <updated>2017-02-22T06:44:27.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>sed基础</title>
+    <link href="http://guopp.me/2017/02/22/sed%E5%9F%BA%E7%A1%80/"/>
+    <id>http://guopp.me/2017/02/22/sed基础/</id>
+    <published>2017-02-22T06:02:49.000Z</published>
+    <updated>2017-02-22T06:44:27.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><code>Linux</code> 中可以使用强大的编辑器如 <code>vim</code> 和 <code>emacs</code> 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 <code>Linux</code> 的 <code>sed</code> 和 <code>gawk</code>。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。</p>
+<h2 id="sed-编辑器"><a href="#sed-编辑器" class="headerlink" title="sed 编辑器"></a><code>sed</code> 编辑器</h2><p><code>sed</code> 编辑器被称为<em>流编辑器(stream editor)</em>, 它使用预先提供的一组规则来编辑数据流。规则就是提供给 <code>sed</code> 的命令，这些命令要么从命令行输入，要么存储在一个命令行文件中。根据所提供的命令，<code>sed</code> 执行如下操作：</p>
+<ul>
+<li>一次从输入中读取一行数据</li>
+<li>根据提供的命令匹配数据</li>
+<li>按照命令修改流中的数据</li>
+<li>将新的数据输出到 <code>STDOUT</code></li>
+</ul>
+<p>在流编辑器将所有命令与一行数据匹配完毕后，就会重复这个流程匹配下一行数据。在处理完所有的流数据后，它就会终止。由于命令是逐行执行的，所以只需要对数据流进行一遍处理就可以完成编辑操作，这比交互式编辑器快的多，而且是完全自动化的操作数据。<br><code>sed</code> 的命令格式如下：</p>
+<p><code>sed options script file</code></p>
+<p>选项可以修改 <code>sed</code> 命令的行为，可以使用的选项如下表：</p>
+<table>
+<thead>
+<tr>
+<th>options</th>
+<th>desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-e script</td>
+<td>将 <code>script</code> 中的命名添加到已有的命令中</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>将 <code>file</code> 中的命令添加到已有的命令中</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>不产生命令输出，使用 <code>print</code> 来完成输出</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-在命令行定义编辑器命令"><a href="#1-在命令行定义编辑器命令" class="headerlink" title="1. 在命令行定义编辑器命令"></a>1. 在命令行定义编辑器命令</h3><p>默认情况下，<code>sed</code> 编辑器直接从 <code>STDIN</code> 读取流数据，然后匹配命令执行编辑操作。如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;This is a test&quot; | sed &apos;s/test/big test/&apos;</div><div class="line">This is a big test</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>这个例子使用了 <code>s</code> 命令。<code>s</code> 命令是替换字符串命令。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中可以使用强大的编辑器如 &lt;code&gt;vim&lt;/code&gt; 和 &lt;code&gt;emacs&lt;/code&gt; 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 &lt;code&gt;Linux&lt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>汇编笔记(三)</title>
+    <link href="http://guopp.me/2017/01/13/%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0-%E4%B8%89/"/>
+    <id>http://guopp.me/2017/01/13/汇编笔记-三/</id>
+    <published>2017-01-13T07:03:56.000Z</published>
+    <updated>2017-01-13T07:03:56.000Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>汇编学习(二)</title>
