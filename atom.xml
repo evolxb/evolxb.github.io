@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-02-22T08:47:23.000Z</updated>
+  <updated>2017-02-22T10:05:04.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://guopp.me/2017/02/22/sed%E5%9F%BA%E7%A1%80/"/>
     <id>http://guopp.me/2017/02/22/sed基础/</id>
     <published>2017-02-22T06:02:49.000Z</published>
-    <updated>2017-02-22T08:47:23.000Z</updated>
+    <updated>2017-02-22T10:05:04.000Z</updated>
     
     <content type="html"><![CDATA[<p><code>Linux</code> 中可以使用强大的编辑器如 <code>vim</code> 和 <code>emacs</code> 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 <code>Linux</code> 的 <code>sed</code> 和 <code>gawk</code>。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。</p>
 <h1 id="sed-编辑器"><a href="#sed-编辑器" class="headerlink" title="sed 编辑器"></a><code>sed</code> 编辑器</h1><p><code>sed</code> 编辑器被称为<em>流编辑器(stream editor)</em>, 它使用预先提供的一组规则来编辑数据流。规则就是提供给 <code>sed</code> 的命令，这些命令要么从命令行输入，要么存储在一个命令行文件中。根据所提供的命令，<code>sed</code> 执行如下操作：</p>
@@ -87,7 +87,37 @@
 <p>w替换标记会产生同样的输出，不过会将输出保存到指定文件中。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;s/test/trial/w test.txt&apos; data3.txt</div><div class="line">This is a trial line.</div><div class="line">This is a different line.</div><div class="line">$</div><div class="line">$ cat test.txt</div><div class="line">This is a trial line.</div><div class="line">$</div></pre></td></tr></table></figure>
 <p><code>sed</code> 的正常输出是在<code>STDOUT</code>，只有那些匹配到的行才会保存到指定的文本文件中。</p>
-]]></content>
+<h3 id="1-2-替换字符"><a href="#1-2-替换字符" class="headerlink" title="1.2 替换字符"></a>1.2 替换字符</h3><p>有时会在字符串中遇到不太方便处理的字符，比如<code>Linux</code>下的<code>/</code>。替换路径中的<code>/</code>就比较麻烦，必须使用<code>\</code>来转义：</p>
+<p><code>$ sed &#39;s/\/bin\/bash/\/bin\/csh/&#39; /etc/passwd</code></p>
+<p>要解决这个问题，<code>sed</code>允许使用其它字符来作为替换命令中的字符串分隔符:</p>
+<p><code>$ sed &#39;s!/bin/bash!/bin/csh!&#39; /etc/passwd</code></p>
+<p>这个例子使用感叹号作为字符串分隔符，这样路径名就容易阅读和理解了。 </p>
+<h2 id="2-使用地址"><a href="#2-使用地址" class="headerlink" title="2. 使用地址"></a>2. 使用地址</h2><p>默认情况下，<code>sed</code>中的命令会作用于所有的数据行，但是如果只想将命令作用于某些特定的行，则必须使用<em>行寻址(<code>line addressing</code>)</em><br><code>sed</code>中有两种行寻址:</p>
+<ul>
+<li>以数字形式表示行区间</li>
+<li>以文本模式来过滤出行</li>
+</ul>
+<p>以上两种形式都使用相同的格式来制定行地址：</p>
+<p><code>[address]command</code></p>
+<p>也可以将特定地址的多个命令分组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">address &#123;</div><div class="line">    command1</div><div class="line">    command2</div><div class="line">    command3</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>sed</code>会将特定的命令作用于指定的行上。</p>
+<h3 id="2-1-使用数字方式的行寻址"><a href="#2-1-使用数字方式的行寻址" class="headerlink" title="2.1 使用数字方式的行寻址"></a>2.1 使用数字方式的行寻址</h3><p>使用数字方式的寻找时，可以使用行在文本流中的位置来引用。文本流中第一行编号为<code>1</code>，然后按顺序分配行号。<br>在命令中使用行号时可以指定单个行号，或是用起始行号、逗号以及结尾行号指定的一定区间范围的行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;2s/dog/cat/&apos; data1.txt</div><div class="line">The quick brown fox jumps over the lazy dog</div><div class="line">The quick brown fox jumps over the lazy cat</div><div class="line">The quick brown fox jumps over the lazy dog</div><div class="line">The quick brown fox jumps over the lazy dog</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的例子使用的是单个行号，<code>sed</code>只修改了第二行的内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;2,$s/dog/cat/&apos; data1.txt</div><div class="line">The quick brown fox jumps over the lazy dog</div><div class="line">The quick brown fox jumps over the lazy cat</div><div class="line">The quick brown fox jumps over the lazy cat</div><div class="line">The quick brown fox jumps over the lazy cat</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面使用了行地址区间。并且<code>$</code>代表从某行开始的所有行。</p>
+<h3 id="2-2-使用文本模式的行寻址"><a href="#2-2-使用文本模式的行寻址" class="headerlink" title="2.2 使用文本模式的行寻址"></a>2.2 使用文本模式的行寻址</h3><p><code>sed</code>编辑器允许指定文本模式来过滤出命令有要作用的行。格式如下:</p>
+<p><code>/pattern/command</code></p>
+<p>必须用正斜线将制定的<code>pattern</code>封起来。其实就是使用<em>正则表达式(<code>regular expression</code>)</em>来过滤文本行. 正则表达式允许创建高级文本模式来匹配各种数据。这种表达式结合了一些列通配符、特殊字符以及固定文本字符来匹配几乎任何形式的文本的简练模式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ grep Samantha /etc/passwd</div><div class="line">Samantha:x:502:502::/home/Samantha:/bin/bash</div><div class="line">$</div><div class="line">$ sed &apos;/Samantha/s/bash/csh/&apos; /etc/passwd</div><div class="line">root:x:0:0:root:/root:/bin/bash</div><div class="line">bin:x:1:1:bin:/bin:/sbin/nologin</div><div class="line">[...]</div><div class="line">Christine:x:501:501:Christine B:/home/Christine:/bin/bash</div><div class="line">Samantha:x:502:502::/home/Samantha:/bin/csh</div><div class="line">Timothy:x:503:503::/home/Timothy:/bin/bash</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面是一个使用简单的文本模式匹配的例子。关于复杂的正则表达式的内容请看相关文章。</p>
+<h3 id="2-3-命令组合"><a href="#2-3-命令组合" class="headerlink" title="2.3 命令组合"></a>2.3 命令组合</h3><p>如果需要在单行上执行多条命令，可以用花括号将多条命令组合在一起。<code>sed</code>编辑器会在地址行处执行每条命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;2&#123;</div><div class="line">&gt; s/fox/elephant/</div><div class="line">&gt; s/dog/cat/</div><div class="line">&gt; &#125;&apos; data1.txt</div><div class="line">The quick brown fox jumps over the lazy dog.</div><div class="line">The quick brown elephant jumps over the lazy cat.</div><div class="line">The quick brown fox jumps over the lazy dog.</div><div class="line">The quick brown fox jumps over the lazy dog.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>两条命令都会作用在第二行。当然也可以使用地址区间:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;3,$&#123;</div><div class="line">&gt; s/brown/green/</div><div class="line">&gt; s/lazy/active/</div><div class="line">&#125;&apos; data1.txt</div><div class="line">The quick brown fox jumps over the lazy dog.</div><div class="line">The quick brown fox jumps over the lazy dog.</div><div class="line">The quick green fox jumps over the active dog.</div><div class="line">The quick green fox jumps over the active dog.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p><code>sed</code> 会将上面的两条命令作用于第三行之后的所有行上。</p>
+<h2 id="2-删除行"><a href="#2-删除行" class="headerlink" title="2 删除行"></a>2 删除行</h2>]]></content>
     
     <summary type="html">
     
