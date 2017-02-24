@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Linux find基础 · guopp</title><meta name="description" content="Linux find基础 - guopp"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://guopp.me/atom.xml" title="guopp"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Linux find基础</h1><div class="post-info">2017年2月24日</div><div class="post-content"><p>搜索文件在使用操作系统中是非常频繁的操作，一个系统中可能有成千上万的文件，怎么快速找到想要的文件是提升效率的关键。<code>Linux</code>中我们可以使用强大的<code>find</code>命令。<code>find</code>命令可以说是<code>Linux</code>中最常用也最复杂的命令，特别是和其他命令一起执行的时候。由于<code>find</code>具有强大的功能，所以它的选项也非常多，其中大部分都值得我们花时间了解一下。</p>
+<h2 id="find命令的一般形式"><a href="#find命令的一般形式" class="headerlink" title="find命令的一般形式"></a><code>find</code>命令的一般形式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">find [-H | -L | -P] [-EXdsx] [-f path] path ... [expression]</div><div class="line">find [-H | -L | -P] [-EXdsx] -f path [path ...] [expression]</div></pre></td></tr></table></figure>
+<p>上面的<code>find</code>命令可以简化为：</p>
+<p><code>find pathname -options [-print -exec -ok ...]</code></p>
+<p>命令参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pathname: find命令所要查找的目录路径。例如用 . 表示当前目录，用 / 表示根目录</div><div class="line"></div><div class="line">-print: 将find命令匹配到的文件输出到标准输出</div><div class="line">-exec: 将find命令匹配到的文件执行该参数指定的shell命令。相应的命令形式为 &apos;command&apos; &#123;&#125;;</div><div class="line">-ok: 和 -exec 相同，只不过更安全</div></pre></td></tr></table></figure>
+<p><code>find</code>命令最简单的使用是，搜索一个或多个目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">$ find .</div><div class="line">.</div><div class="line">./.android</div><div class="line">./.android/adbkey</div><div class="line">./.android/adbkey.pub</div><div class="line">./.android/androidwin.cfg</div><div class="line">./.android/avd</div><div class="line">./.android/cache</div><div class="line">./.android/cache/api-versions-6.bin</div><div class="line">[...]</div><div class="line">$</div><div class="line">$ find / </div><div class="line">/</div><div class="line">find: /.fseventsd: Permission denied</div><div class="line">/.MobileBackups</div><div class="line">find: /.MobileBackups: Permission denied</div><div class="line">/.OSInstallerMessages</div><div class="line">/.PKInstallSandboxManager</div><div class="line">/.PKInstallSandboxManager-SystemSoftware</div><div class="line">/.vol</div><div class="line">/Applications</div><div class="line">/Applications/.DS_Store</div><div class="line">/Applications/.localized</div><div class="line">/Applications/Adobe Application Manager</div><div class="line">/Applications/Adobe Photoshop CC 2014</div><div class="line">/Applications/Adobe Photoshop CC 2014/Adobe Photoshop CC 2014.app</div><div class="line">[...]</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>也可以一次搜索多个目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ find . /</div><div class="line">[...] // 输出结果太多，省略</div></pre></td></tr></table></figure>
+<p>如果仅仅只是列出某个目录的所有文件就感受不到<code>find</code>的强大。<code>find</code>可以通过组合各种选项来组成搜索条件来完成搜索，而且还可以运用各种相关的操作。</p>
+<h2 id="Tests"><a href="#Tests" class="headerlink" title="Tests"></a>Tests</h2><p>我们可以根据文件类型来搜索。<code>find</code>支持的文件类型如下(<code>-type</code> 参数)：</p>
+<table>
+<thead>
+<tr>
+<th>文件类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>块设备文件</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字符设备文件</td>
+</tr>
+<tr>
+<td>d</td>
+<td>目录</td>
+</tr>
+<tr>
+<td>f</td>
+<td>普通文件</td>
+</tr>
+<tr>
+<td>l</td>
+<td>符号链接</td>
+</tr>
+</tbody>
+</table>
+<p>比如我们只想搜索某个目录下面所有的子目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ find . -type d </div><div class="line">.</div><div class="line">./.android</div><div class="line">./.android/avd</div><div class="line">./.android/cache</div><div class="line">./.atom</div><div class="line">./.atom/.apm</div><div class="line">./.atom/.apm/_locks</div><div class="line">./.atom/.apm/atom-autocomplete-php</div><div class="line">./.atom/.apm/atom-autocomplete-php/0.18.9</div><div class="line">./.atom/.apm/atom-autocomplete-php/0.18.9/package</div><div class="line">[...]</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>我们也可以只搜索某个目录下的普通文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ find ~ -type f | wc -l</div><div class="line">868386</div><div class="line">$</div></pre></td></tr></table></figure></p>
+<p>也可以根据文件大小来搜索(<code>-size</code> 参数):</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>单位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>512个字节块。如果没有指定单位，则这是默认值。</td>
+</tr>
+<tr>
+<td>c</td>
+<td>字节</td>
+</tr>
+<tr>
+<td>w</td>
+<td>两个字节的字</td>
+</tr>
+<tr>
+<td>k</td>
+<td>千字节(1024字节)</td>
+</tr>
+<tr>
+<td>M</td>
+<td>兆字节(1048576字节)</td>
+</tr>
+<tr>
+<td>G</td>
+<td>千兆字节(1073741824字节)</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以搜索目录下面文件大小大于<code>1G</code>的文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ find ~ -type f -size +1G</div><div class="line">/Documents/Virtual Machines.localized/Windows 10 x64 2.vmwarevm/Virtual Disk-s001.vmdk</div><div class="line">./Documents/Virtual Machines.localized/Windows 10 x64 2.vmwarevm/Virtual Disk-s002.vmdk</div><div class="line">./Documents/Virtual Machines.localized/Windows 10 x64 2.vmwarevm/Virtual Disk-s003.vmdk</div><div class="line">[...]</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的例子使用了文件类型和文件大小一起作为搜索的测试条件，只有文件类型是普通文件而且大小大于<code>1G</code>的文件才会被搜索到。我们也可以再增加搜索条件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ find ~ -type f -name &quot;*.png&quot; -size +1M | wc -l</div><div class="line">5543</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的例子中我们使用了<code>-name</code>测试条件，后面跟通配符模式。注意我们使用双引号括起来，是为了阻止<code>bash</code>展开星号。上面的测试条件是找到文件名以<code>png</code>结尾，并且是普通文件类型的文件，而且文件大小要大于<code>1M</code>。如果在数字参数前面加上<code>+</code>或者<code>-</code>则表示大于或者小于指定数。</p>
+<p><code>find</code>的其他测试条件<br>| 测试条件 | 描述 |<br>| ——- | — |<br>| -cmin n |    匹配的文件和目录的内容或属性最后修改时间正好在 n 分钟之前。 指定少于 n 分钟之前，使用 -n，指定多于 n 分钟之前，使用 +n。 |<br>| -cnewer file | 匹配的文件和目录的内容或属性最后修改时间早于那些文件。|<br>| -ctime n | 匹配的文件和目录的内容和属性最后修改时间在 n<em>24小时之前。|<br>| -empty | 匹配空文件和目录。 |<br>| -group name | 匹配的文件和目录属于一个组。组可以用组名或组 ID 来表示。|<br>| -iname pattern | 就像-name 测试条件，但是不区分大小写。|<br>| -inum n | 匹配的文件的 inode 号是 n。这对于找到某个特殊 inode 的所有硬链接很有帮助。|<br>| -mmin n | 匹配的文件或目录的内容被修改于 n 分钟之前。|<br>| -mtime n | 匹配的文件或目录的内容被修改于 n</em>24小时之前。|<br>| -name pattern    | 用指定的通配符模式匹配的文件和目录。|<br>| -newer file | 匹配的文件和目录的内容早于指定的文件。当编写 shell 脚本，做文件备份时，非常有帮助。 每次你制作一个备份，更新文件（比如说日志），然后使用 find 命令来决定自从上次更新，哪一个文件已经更改了。|<br>| -nouser | 匹配的文件和目录不属于一个有效用户。这可以用来查找 属于删除帐户的文件或监测攻击行为。|<br>| -nogroup | 匹配的文件和目录不属于一个有效的组。|<br>| -perm mode | 匹配的文件和目录的权限已经设置为指定的 mode。mode 可以用 八进制或符号表示法。|<br>| -samefile name | 相似于-inum 测试条件。匹配和文件 name 享有同样 inode 号的文件。|<br>| -size n | 匹配的文件大小为 n。|<br>| -type c | 匹配的文件类型是 c。|<br>| -user name | 匹配的文件或目录属于某个用户。这个用户可以通过用户名或用户 ID 来表示。|</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">下一篇</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2015 - 2017 <a href="http://guopp.me">guopp</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>
