@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Linux find基础 · guopp</title><meta name="description" content="Linux find基础 - guopp"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://guopp.me/atom.xml" title="guopp"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Linux find基础</h1><div class="post-info">2017年2月24日</div><div class="post-content"><p>搜索文件在使用操作系统中是非常频繁的操作，一个系统中可能有成千上万的文件，怎么快速找到想要的文件是提升效率的关键。<code>Linux</code>中我们可以使用强大的<code>find</code>命令。<code>find</code>命令可以说是<code>Linux</code>中最常用也最复杂的命令，特别是和其他命令一起执行的时候。由于<code>find</code>具有强大的功能，所以它的选项也非常多，其中大部分都值得我们花时间了解一下。</p>
 <h2 id="find命令的一般形式"><a href="#find命令的一般形式" class="headerlink" title="find命令的一般形式"></a><code>find</code>命令的一般形式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">find [-H | -L | -P] [-EXdsx] [-f path] path ... [expression]</div><div class="line">find [-H | -L | -P] [-EXdsx] -f path [path ...] [expression]</div></pre></td></tr></table></figure>
 <p>上面的<code>find</code>命令可以简化为：</p>
-<p><code>find pathname -options [-print -exec -ok ...]</code></p>
+<p><code>find pathname -options [-print -exec -ok ... action]</code></p>
 <p>命令参数：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pathname: find命令所要查找的目录路径。例如用 . 表示当前目录，用 / 表示根目录</div><div class="line"></div><div class="line">-print: 将find命令匹配到的文件输出到标准输出</div><div class="line">-exec: 将find命令匹配到的文件执行该参数指定的shell命令。相应的命令形式为 &apos;command&apos; &#123;&#125;;</div><div class="line">-ok: 和 -exec 相同，只不过更安全</div></pre></td></tr></table></figure>
 <p><code>find</code>命令最简单的使用是，搜索一个或多个目录。</p>
@@ -264,6 +264,15 @@
 <p>也可以使用<code>-delete</code>来删除搜索到的文件和目录：</p>
 <p><code>find . -empty -delete</code><br><code>find . -type f -name &#39;*.txt&#39; -delete</code></p>
 <p>上面的第一条命令会删除当前目录下的空目录和空文件，第二条命令会删除当前目录下面所有的<code>txt</code>文件。( 好像例子不是太好:( )<br><strong>当使用<code>-delete</code>时得特别小心，可以先用<code>print</code>输出看看里面有没有不能删除的文件</strong></p>
+<h2 id="自定义操作"><a href="#自定义操作" class="headerlink" title="自定义操作"></a>自定义操作</h2><p><code>find</code>除了可以使用预定义的操作之外，还可以通过<code>-exec</code>来自定义操作：</p>
+<p><code>find path [expression] -exec command {} ;</code></p>
+<p>上面的<code>-exec</code>是表示自定义操作的开始，<code>command</code>就是<code>shell</code>命令的名字，<code>{}</code>是当前路径名的符号表示，分号是命令结束的标志。</p>
+<p><code>find . -type f -name &quot;*.zip&quot; -size +100M -exec rm {} \;</code></p>
+<p>删除当前目录下大于<code>100M</code>的压缩文件。上面命令中的<code>{}</code>代表<code>find</code>找到的文件路径，<code>find</code>的结果会放到<code>{}</code>位置之中作为<code>rm</code>的参数。</p>
+<p><code>find . -type f -name &quot;.pdf&quot; -exec ls -l {} \;</code></p>
+<p>上面的命令用于输出当前目录下所有的<code>pdf</code>文件详情。当使用<code>-exec</code>时，每找到一个匹配就会执行一次<code>-exec</code>后面的命令。有时候我们可能希望将<code>find</code>的结果作为一个整体然后再运行额外的命令，这个时候就可以使用外部命令<code>xargs</code>。<code>xargs</code>从标准输入接受输入，并把输入转换为一个特定命令的参数列表，这样命令就不用每匹配到一个文件或目录就执行一次。</p>
+<p><code>find ~ type f -name &quot;*.pdf&quot; | xargs ls -l</code></p>
+<p>因为<code>xargs</code>接受标准输入，所以把<code>find</code>的结果用管道(<code>pipe</code>)到<code>xargs</code>的输入，<code>xargs</code>会把输入构造为<code>ls</code>的参数列表，然后执行<code>ls</code>命令。这种方式比<code>-exec</code>方式快很多，<code>ls</code>执行的次数远远小于<code>-exec</code>的匹配到文件就执行一次命令。<br><code>xargs</code>后面的命令并不是只执行一次，这取决于输入的参数的个数，如果超过了<code>bash</code>能够处理的最大长度，<code>xargs</code>会使用最大的参数长度执行后面的命令，然后重复这个过程，直到所有的输入都执行完。</p>
 </div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">NEXT</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
