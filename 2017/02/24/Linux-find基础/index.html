@@ -193,6 +193,44 @@
 </tr>
 </tbody>
 </table>
+<p><strong>注意，<code>find</code>命令从左往右计算，而且要注意圆括号在<code>bash</code>中要转义</strong></p>
+<p>我们可以使用上面的逻辑操作符来构造复杂的测试条件，例如只查找特定某些文件：</p>
+<p><code>find . \(-name &quot;*.pdf&quot; -or -name &quot;*.txt&quot;\)</code></p>
+<p>上面的例子会打印当前目录下以<code>.txt</code>或<code>.pdf</code>结尾的文件名。也可以找出目录下不是<code>pdf</code>的普通文件：</p>
+<p><code>find . ! -name &quot;*.pdf&quot;</code></p>
+<p><code>expr1 -operator expr2</code></p>
+<p>逻辑操作符可以描述为上面的简短形式。逻辑操作符还有一种和其他编程语言相同的特性：短路。下面是逻辑操作符的执行情况：</p>
+<table>
+<thead>
+<tr>
+<th>expr1的结果</th>
+<th>操作符</th>
+<th>expr2的执行情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>真</td>
+<td>-and</td>
+<td>总要执行</td>
+</tr>
+<tr>
+<td>假</td>
+<td>-and</td>
+<td>从不执行</td>
+</tr>
+<tr>
+<td>真</td>
+<td>-or</td>
+<td>从不执行</td>
+</tr>
+<tr>
+<td>假</td>
+<td>-or</td>
+<td>总要执行</td>
+</tr>
+</tbody>
+</table>
 </div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">NEXT</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
