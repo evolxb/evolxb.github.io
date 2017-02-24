@@ -83,8 +83,90 @@
 <p>上面的例子使用了文件类型和文件大小一起作为搜索的测试条件，只有文件类型是普通文件而且大小大于<code>1G</code>的文件才会被搜索到。我们也可以再增加搜索条件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ find ~ -type f -name &quot;*.png&quot; -size +1M | wc -l</div><div class="line">5543</div><div class="line">$</div></pre></td></tr></table></figure>
 <p>上面的例子中我们使用了<code>-name</code>测试条件，后面跟通配符模式。注意我们使用双引号括起来，是为了阻止<code>bash</code>展开星号。上面的测试条件是找到文件名以<code>png</code>结尾，并且是普通文件类型的文件，而且文件大小要大于<code>1M</code>。如果在数字参数前面加上<code>+</code>或者<code>-</code>则表示大于或者小于指定数。</p>
-<p><code>find</code>的其他测试条件<br>| 测试条件 | 描述 |<br>| ——- | — |<br>| -cmin n |    匹配的文件和目录的内容或属性最后修改时间正好在 n 分钟之前。 指定少于 n 分钟之前，使用 -n，指定多于 n 分钟之前，使用 +n。 |<br>| -cnewer file | 匹配的文件和目录的内容或属性最后修改时间早于那些文件。|<br>| -ctime n | 匹配的文件和目录的内容和属性最后修改时间在 n<em>24小时之前。|<br>| -empty | 匹配空文件和目录。 |<br>| -group name | 匹配的文件和目录属于一个组。组可以用组名或组 ID 来表示。|<br>| -iname pattern | 就像-name 测试条件，但是不区分大小写。|<br>| -inum n | 匹配的文件的 inode 号是 n。这对于找到某个特殊 inode 的所有硬链接很有帮助。|<br>| -mmin n | 匹配的文件或目录的内容被修改于 n 分钟之前。|<br>| -mtime n | 匹配的文件或目录的内容被修改于 n</em>24小时之前。|<br>| -name pattern    | 用指定的通配符模式匹配的文件和目录。|<br>| -newer file | 匹配的文件和目录的内容早于指定的文件。当编写 shell 脚本，做文件备份时，非常有帮助。 每次你制作一个备份，更新文件（比如说日志），然后使用 find 命令来决定自从上次更新，哪一个文件已经更改了。|<br>| -nouser | 匹配的文件和目录不属于一个有效用户。这可以用来查找 属于删除帐户的文件或监测攻击行为。|<br>| -nogroup | 匹配的文件和目录不属于一个有效的组。|<br>| -perm mode | 匹配的文件和目录的权限已经设置为指定的 mode。mode 可以用 八进制或符号表示法。|<br>| -samefile name | 相似于-inum 测试条件。匹配和文件 name 享有同样 inode 号的文件。|<br>| -size n | 匹配的文件大小为 n。|<br>| -type c | 匹配的文件类型是 c。|<br>| -user name | 匹配的文件或目录属于某个用户。这个用户可以通过用户名或用户 ID 来表示。|</p>
-</div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">下一篇</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+<p><code>find</code>的其他测试条件，下面是一些常见的测试条件，在数值参数的前面可以使用<code>+</code>或者<code>-</code>：</p>
+<table>
+<thead>
+<tr>
+<th>测试条件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-cmin n</td>
+<td>匹配的文件和目录的内容或属性最后修改时间正好在 n 分钟之前。 指定少于 n 分钟之前，使用 -n，指定多于 n 分钟之前，使用 +n。</td>
+</tr>
+<tr>
+<td>-cnewer file</td>
+<td>匹配的文件和目录的内容或属性最后修改时间早于那些文件。</td>
+</tr>
+<tr>
+<td>-ctime n</td>
+<td>匹配的文件和目录的内容和属性最后修改时间在 n*24小时之前。</td>
+</tr>
+<tr>
+<td>-empty</td>
+<td>匹配空文件和目录。</td>
+</tr>
+<tr>
+<td>-group name</td>
+<td>匹配的文件和目录属于一个组。组可以用组名或组 ID 来表示。</td>
+</tr>
+<tr>
+<td>-iname pattern</td>
+<td>就像-name 测试条件，但是不区分大小写。</td>
+</tr>
+<tr>
+<td>-inum n</td>
+<td>匹配的文件的 inode 号是 n。这对于找到某个特殊 inode 的所有硬链接很有帮助。</td>
+</tr>
+<tr>
+<td>-mmin n</td>
+<td>匹配的文件或目录的内容被修改于 n 分钟之前。</td>
+</tr>
+<tr>
+<td>-mtime n</td>
+<td>匹配的文件或目录的内容被修改于 n*24小时之前。</td>
+</tr>
+<tr>
+<td>-name pattern</td>
+<td>用指定的通配符模式匹配的文件和目录。</td>
+</tr>
+<tr>
+<td>-newer file</td>
+<td>匹配的文件和目录的内容早于指定的文件。当编写 shell 脚本，做文件备份时，非常有帮助。 每次你制作一个备份，更新文件（比如说日志），然后使用 find 命令来决定自从上次更新，哪一个文件已经更改了。</td>
+</tr>
+<tr>
+<td>-nouser</td>
+<td>匹配的文件和目录不属于一个有效用户。这可以用来查找 属于删除帐户的文件或监测攻击行为。</td>
+</tr>
+<tr>
+<td>-nogroup</td>
+<td>匹配的文件和目录不属于一个有效的组。</td>
+</tr>
+<tr>
+<td>-perm mode</td>
+<td>匹配的文件和目录的权限已经设置为指定的 mode。mode 可以用 八进制或符号表示法。</td>
+</tr>
+<tr>
+<td>-samefile name</td>
+<td>相似于-inum 测试条件。匹配和文件 name 享有同样 inode 号的文件。</td>
+</tr>
+<tr>
+<td>-size n</td>
+<td>匹配的文件大小为 n。</td>
+</tr>
+<tr>
+<td>-type c</td>
+<td>匹配的文件类型是 c。</td>
+</tr>
+<tr>
+<td>-user name</td>
+<td>匹配的文件或目录属于某个用户。这个用户可以通过用户名或用户 ID 来表示。</td>
+</tr>
+</tbody>
+</table>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">NEXT</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
