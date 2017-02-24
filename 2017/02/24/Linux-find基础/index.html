@@ -198,8 +198,8 @@
 <p><code>find . \(-name &quot;*.pdf&quot; -or -name &quot;*.txt&quot;\)</code></p>
 <p>上面的例子会打印当前目录下以<code>.txt</code>或<code>.pdf</code>结尾的文件名。也可以找出目录下不是<code>pdf</code>的普通文件：</p>
 <p><code>find . ! -name &quot;*.pdf&quot;</code></p>
+<p>逻辑操作符可以描述为下面的简短形式。逻辑操作符还有一种和其他编程语言相同的特性：短路。下面是逻辑操作符的执行情况：</p>
 <p><code>expr1 -operator expr2</code></p>
-<p>逻辑操作符可以描述为上面的简短形式。逻辑操作符还有一种和其他编程语言相同的特性：短路。下面是逻辑操作符的执行情况：</p>
 <table>
 <thead>
 <tr>
@@ -231,6 +231,39 @@
 </tr>
 </tbody>
 </table>
+<h2 id="预定义操作"><a href="#预定义操作" class="headerlink" title="预定义操作"></a>预定义操作</h2><p><code>find</code>除了可以根据特定条件搜索文件外，还可以在搜索到文件之后根据搜索结果执行预定义的操作。<code>find</code>预定义的常用的操作如下表:</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-print</td>
+<td>把匹配文件的全路径名输送到标准输出。如果没有指定其它操作，这是 默认操作。</td>
+</tr>
+<tr>
+<td>-delete</td>
+<td>删除匹配到的文件</td>
+</tr>
+<tr>
+<td>-ls</td>
+<td>对匹配到的结果执行 <code>ls -dils</code> 命令，然后将结果输出到 <code>STDOUT</code></td>
+</tr>
+<tr>
+<td>-quit</td>
+<td>一旦找到一个匹配，就退出</td>
+</tr>
+</tbody>
+</table>
+<p><code>find .</code></p>
+<p>会输出当前目录的所有文件和子目录，这相对于：</p>
+<p><code>find . -print</code></p>
+<p>也可以使用<code>-delete</code>来删除搜索到的文件和目录：</p>
+<p><code>find . -empty -delete</code><br><code>find . -type f -name &#39;*.txt&#39; -delete</code></p>
+<p>上面的第一条命令会删除当前目录下的空目录和空文件，第二条命令会删除当前目录下面所有的<code>txt</code>文件。( 好像例子不是太好:( )<br><strong>当使用<code>-delete</code>时得特别小心，可以先用<code>print</code>输出看看里面有没有不能删除的文件</strong></p>
 </div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">NEXT</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
