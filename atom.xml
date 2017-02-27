@@ -315,9 +315,10 @@
     <link href="http://guopp.me/2017/02/22/sed%E5%9F%BA%E7%A1%80/"/>
     <id>http://guopp.me/2017/02/22/sed基础/</id>
     <published>2017-02-22T06:02:49.000Z</published>
-    <updated>2017-02-27T07:23:45.000Z</updated>
+    <updated>2017-02-27T07:27:03.000Z</updated>
     
     <content type="html"><![CDATA[<p><code>Linux</code> 中可以使用强大的编辑器如 <code>vim</code> 和 <code>emacs</code> 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 <code>Linux</code> 的 <code>sed</code> 和 <code>gawk</code>。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。</p>
+<a id="more"></a>
 <h1 id="sed-编辑器"><a href="#sed-编辑器" class="headerlink" title="sed 编辑器"></a><code>sed</code> 编辑器</h1><p><code>sed</code> 编辑器被称为<em>流编辑器(stream editor)</em>, 它使用预先提供的一组规则来编辑数据流。规则就是提供给 <code>sed</code> 的命令，这些命令要么从命令行输入，要么存储在一个命令行文件中。根据所提供的命令，<code>sed</code> 执行如下操作：</p>
 <ul>
 <li>一次从输入中读取一行数据</li>
@@ -460,7 +461,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中可以使用强大的编辑器如 &lt;code&gt;vim&lt;/code&gt; 和 &lt;code&gt;emacs&lt;/code&gt; 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 &lt;code&gt;Linux&lt;
+      &lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中可以使用强大的编辑器如 &lt;code&gt;vim&lt;/code&gt; 和 &lt;code&gt;emacs&lt;/code&gt; 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 &lt;code&gt;Linux&lt;/code&gt; 的 &lt;code&gt;sed&lt;/code&gt; 和 &lt;code&gt;gawk&lt;/code&gt;。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。&lt;/p&gt;
     
     </summary>
     
