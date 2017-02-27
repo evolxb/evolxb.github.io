@@ -315,7 +315,7 @@
     <link href="http://guopp.me/2017/02/22/sed%E5%9F%BA%E7%A1%80/"/>
     <id>http://guopp.me/2017/02/22/sed基础/</id>
     <published>2017-02-22T06:02:49.000Z</published>
-    <updated>2017-02-27T07:13:45.000Z</updated>
+    <updated>2017-02-27T07:23:45.000Z</updated>
     
     <content type="html"><![CDATA[<p><code>Linux</code> 中可以使用强大的编辑器如 <code>vim</code> 和 <code>emacs</code> 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 <code>Linux</code> 的 <code>sed</code> 和 <code>gawk</code>。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。</p>
 <h1 id="sed-编辑器"><a href="#sed-编辑器" class="headerlink" title="sed 编辑器"></a><code>sed</code> 编辑器</h1><p><code>sed</code> 编辑器被称为<em>流编辑器(stream editor)</em>, 它使用预先提供的一组规则来编辑数据流。规则就是提供给 <code>sed</code> 的命令，这些命令要么从命令行输入，要么存储在一个命令行文件中。根据所提供的命令，<code>sed</code> 执行如下操作：</p>
@@ -455,6 +455,7 @@
 <p>转换命令是一个全局命令，也就是说它会在文本行中替换所有的指定字符，而不考虑它们出现的位置。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;There is 1 cat and 1 dog.&quot; sed &apos;y/123/456/&apos;</div><div class="line">There is 4 cat and 4 dog.</div><div class="line">$</div></pre></td></tr></table></figure>
 <p>你无法限定只转换特定地方的特定字符，<code>sed</code>会转换所有匹配到的字符。</p>
+<p><code>sed</code>基础的思维导图，可以参考下图：<br><img src="http://7xvudw.com1.z0.glb.clouddn.com/sed基础.png" alt=""></p>
 ]]></content>
     
     <summary type="html">
