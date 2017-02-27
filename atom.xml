@@ -315,7 +315,7 @@
     <link href="http://guopp.me/2017/02/22/sed%E5%9F%BA%E7%A1%80/"/>
     <id>http://guopp.me/2017/02/22/sed基础/</id>
     <published>2017-02-22T06:02:49.000Z</published>
-    <updated>2017-02-27T06:58:52.000Z</updated>
+    <updated>2017-02-27T07:11:29.000Z</updated>
     
     <content type="html"><![CDATA[<p><code>Linux</code> 中可以使用强大的编辑器如 <code>vim</code> 和 <code>emacs</code> 来编辑文本文件。但有时候，我们只是需要自动的处理文本文件，而不是这些强大的交互式文本编辑器。这种时候可以使用 <code>Linux</code> 的 <code>sed</code> 和 <code>gawk</code>。它们能够轻松的实现自动格式化、插入、修改或者删除文本元素。</p>
 <h1 id="sed-编辑器"><a href="#sed-编辑器" class="headerlink" title="sed 编辑器"></a><code>sed</code> 编辑器</h1><p><code>sed</code> 编辑器被称为<em>流编辑器(stream editor)</em>, 它使用预先提供的一组规则来编辑数据流。规则就是提供给 <code>sed</code> 的命令，这些命令要么从命令行输入，要么存储在一个命令行文件中。根据所提供的命令，<code>sed</code> 执行如下操作：</p>
@@ -448,6 +448,13 @@
 <p><code>c</code>命令指出单地址也指出地址区间，也可以使用文本匹配。如果是地址区间，则会把地址区间中的文本变为指定的文本行。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;/number 1/,/number 3/c\</div><div class="line">&gt; This is a new line.&apos; data6.txt</div><div class="line">This is a new line.</div><div class="line">this is line number 4.</div><div class="line">$</div></pre></td></tr></table></figure>
 <p><strong>记住：<code>sed</code>是一个流编辑器。</strong></p>
+<h2 id="5-转换命令"><a href="#5-转换命令" class="headerlink" title="5. 转换命令"></a>5. 转换命令</h2><p>转换(<code>transform</code>)命令(<code>y</code>)是唯一一个可以处理单个字符的<code>sed</code>命令。格式如下：</p>
+<p><code>[address]y/inchars/outchars/</code></p>
+<p>转换命令会对<code>inchars</code>和<code>outchars</code>值进行一对一映射。<code>inchars</code>中的第一个字符会被转换为<code>outchars</code>中的第一个字符，<code>inchars</code>中的第二个字符会被转换为<code>outchars</code>中的第二个字符，依次类推。所有如果<code>inchars</code>的长度和<code>outchars</code>长度不同，则<code>sed</code>会产生一条错误消息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ sed &apos;y/123/789&apos; data8.txt</div><div class="line">This is line number 7.</div><div class="line">This is line number 8.</div><div class="line">This is line number 9.</div><div class="line">This is line number 4.</div><div class="line">This is line number 7 again.</div><div class="line">This is yet another line.</div><div class="line">This is the last line in the file.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>转换命令是一个全局命令，也就是说它会在文本行中替换所有的指定字符，而不考虑它们出现的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;There is 1 cat and 1 dog.&quot; sed &apos;y/123/456/&apos;</div><div class="line">There is 4 cat and 4 dog.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>你无法限定特定地方的特定字符，<code>sed</code>会转换所有匹配到的字符。</p>
 ]]></content>
     
     <summary type="html">
