@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 正则表达式 · guopp</title><meta name="description" content="正则表达式 - guopp"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://guopp.me/atom.xml" title="guopp"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="http://weibo.com/u/2008880411/home" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">正则表达式</h1><div class="post-info">2017年3月1日</div><div class="post-content"><p><code>Linux</code>中大部分时间都是在处理文本内容，而为了更加快速和自动化的处理文本，我们就需要正则表达式。正则表达式提供了功能强大、灵活而又高效的方式来处理文本。正则表达式的模式匹配可以使你在大量的文本内容中快速找到特定的字符序列。验证文本来确保所匹配的模式符合某种规则：如电子邮件地址，还可以提起，编辑，删除文本字符串。对于快速处理大量的文本内容，正则表达式是不可或缺的工具。</p>
+<a id="more"></a>
+<p>正则表达式是你所定义的模式模版(<code>pattern template</code>)，<code>Linux</code>工具可以使用它来过滤和处理文本。如<code>grep</code>,<code>sed,</code>awk`等工具都支持正则表达式。如果数据匹配模式，它就会被接受并进行下一步处理，如果数据不匹配模式则它会被丢弃。下图描述下这个过程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">文本数据 -----&gt; 正则表达式 -------&gt; 匹配的数据</div><div class="line">                |</div><div class="line">                |</div><div class="line">                |</div><div class="line">                ↓</div><div class="line">            丢弃的数据</div></pre></td></tr></table></figure>
+<h1 id="1-正则表达式的类型"><a href="#1-正则表达式的类型" class="headerlink" title="1. 正则表达式的类型"></a>1. 正则表达式的类型</h1><p>正则表达式是通过<em>正则表达式引擎(regular expression engine)</em>实现的。正则表达式引擎是一套底层软件，负责解释正则表达式模式并使用这些模式进行文本匹配。<br>在<code>Linux</code>中，有两种流行的正则表达式引擎：</p>
+<ul>
+<li>BRE: POSIX基础正则表达式引擎(basic regular expression)</li>
+<li>ERE: POSIX扩展正则表达式引擎(extended regular expression)</li>
+</ul>
+<h1 id="2-BRE模式"><a href="#2-BRE模式" class="headerlink" title="2. BRE模式"></a>2. BRE模式</h1><p>最基本的<code>BRE</code>模式就是匹配数据流中的文本字符。</p>
+<h1 id="2-1-纯文本"><a href="#2-1-纯文本" class="headerlink" title="2.1 纯文本"></a>2.1 纯文本</h1><p>下面使用<code>sed</code>程序使用正则表达式过滤数据.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;This is a test&quot; | sed -n &apos;/test/p&apos;</div><div class="line">This is a test</div><div class="line">$ echo &quot;This is a test&quot; | sed -n &apos;/tset/p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;This is a test&quot; | sed -n &apos;/this/p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;This is a test&quot; | sed -n &apos;/This/p&apos;</div><div class="line">This is a test</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>第一个例子使用<code>test</code>来匹配数据流中的文本。由于<code>echo</code>语句中包含了单词<code>test</code>,所以<code>sed</code>能匹配到该文本模式，然后使用<code>p</code>命令输出匹配到的文本行。第二个例子使用<code>tset</code>，然后文本流中并没有这个单词，所以<code>sed</code>并没有匹配到这个模式，就没有输出任何数据。第三个例子使用的<code>this</code>，这次也没有匹配成功，应该文本流中并没有小写的<code>this</code>,所以也没有匹配成功。第四次文本流中出现了<code>This</code>，所以匹配成功。</p>
+<p>正则表达式并不关心模式匹配出现在数据流的位置，它也不关心模式出现了多少次，一旦匹配到该模式，则会把数据流中的文本行传回给<code>Linux</code>命令。但是正则表达式会区分大小写，它们只匹配字符序列和模式一样的文本行。匹配到的文本行中必须出现模式，而且文本流中匹配到的字符序列必须和模式中的字符顺序一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;There are many dog.&quot; | sed -n &apos;/dogs/p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;There are many dogs.&quot; | sed -n &apos;/dogs/p&apos;</div><div class="line">There are many dogs.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的第一个例子匹配<code>dogs</code>,但是文本流中只有<code>dog</code>,所以匹配失败。第二个例子则成功的匹配到了<code>dogs</code>。所以模式中的字符串必须安装顺序全部出现在文本流中才能匹配成功。<br>如果只使用上面这张字符串匹配则并不能一次处理大量的文本。如果想一次匹配很多字符串则必须把它们都写出来，这并不能发挥正则表达式的强大能力，下面会介绍正则表达式中非常有用的一些特殊字符来构造复杂的模式。</p>
+<h1 id="2-2-特殊字符"><a href="#2-2-特殊字符" class="headerlink" title="2.2 特殊字符"></a>2.2 特殊字符</h1><p>有些字符在正则表达式中有特别的含义，结合这些特殊字符可以构造复杂的模式匹配。这些特殊字符包括：</p>
+<p><code>.*[]^$\+?|()</code></p>
+<p>因为这些特殊字符在正则表达式中具有特殊意义，如果只是想把它们作为文本字符来匹配则需要使用<code>\</code>来转义。而且如果想匹配反斜线也必须使用<code>\</code>来转义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;\ is a special character&quot; | sed -n &apos;///p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;\ is a special character&quot; | sed -n &apos;/\//p&apos;</div><div class="line">\ is a special character</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="2-3-锚字符"><a href="#2-3-锚字符" class="headerlink" title="2.3 锚字符"></a>2.3 锚字符</h1><p>默认情况下，当匹配模式时，只要模式在数据流的任何位置出现，模式匹配都会成功。有两个字符可以现在模式在数据流中出现的位置。</p>
+<h2 id="2-3-1-行首"><a href="#2-3-1-行首" class="headerlink" title="2.3.1 行首"></a>2.3.1 行首</h2><p><code>^</code>字符定义从数据流中文本行的行首开始的模式。如果模式出现在行首则匹配成功，否则无法匹配。要使用<code>^</code>，必须将它放到正则表达式中模式的前面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;Make American great again.&quot;  | sed -n &apos;/^make/p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;Make American great again.&quot;  | sed -n &apos;/^Make/p&apos;</div><div class="line">Make American great again.</div></pre></td></tr></table></figure>
+<h2 id="2-3-2-行尾"><a href="#2-3-2-行尾" class="headerlink" title="2.3.2 行尾"></a>2.3.2 行尾</h2><p>和<code>^</code>一样，<code>$</code>表示模式必须出现在行尾。将这个特殊字符放在文本模式后面来指明数据必须以该文本模式结尾。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;MAKE AMERICAN GREAT AGAIN.&quot; | sed -n &apos;/again$/p&apos;</div><div class="line">$</div><div class="line">$ echo &quot;MAKE AMERICAN GREAT AGAIN.&quot; | sed -n &apos;/AGAIN$/p&apos;</div><div class="line">MAKE AMERICAN GREAT AGAIN.</div></pre></td></tr></table></figure>
+<h2 id="2-3-2-组合锚点"><a href="#2-3-2-组合锚点" class="headerlink" title="2.3.2 组合锚点"></a>2.3.2 组合锚点</h2><p>在某些情况下可以在同一行中把行首锚点和行尾锚点组合起来使用。一种情况是为了查找只含有特定文本的数据行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ cat data1.txt</div><div class="line">make american great again.</div><div class="line">Make american great again.</div><div class="line">MAKE AMERICAN GREAT AGAIN.</div><div class="line">$ sed -n &apos;/^MAKE AMERICAN GREAT AGAIN.$/p&apos; data1.txt</div><div class="line">MAKE AMERICAN GREAT AGAIN.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>还有一个情况就是在行首锚点和行尾锚点之间不加任何文本，这样就会过滤出数据流中的空白行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ cat data2.txt</div><div class="line">make american great again.</div><div class="line"></div><div class="line">Make american great again.</div><div class="line"></div><div class="line">MAKE AMERICAN GREAT AGAIN.</div><div class="line">$ sed -n &apos;/^$/d&apos; data2.txt</div><div class="line">make american great again.</div><div class="line">Make american great again.</div><div class="line">MAKE AMERICAN GREAT AGAIN.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面定义的正则表达式模式会查找行首和行尾之间什么都没有的数据行。然后使用<code>d</code>命令来删除匹配到的空白行，因此输出的文本流中就没有空白行了。这是从文档中删除空白行的很有效的方法。</p>
+<h1 id="2-4-点字符"><a href="#2-4-点字符" class="headerlink" title="2.4 点字符"></a>2.4 点字符</h1><p>特殊字符点号用来匹配除换行符之外的任意一个字符。在点号出现的位置必须有且只有一个字符，才能匹配成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ cat zip.txt</div><div class="line">bzip2</div><div class="line">bunzip</div><div class="line">gzip</div><div class="line">gunzip</div><div class="line">unzip</div><div class="line">zip</div><div class="line">$ sed -n &apos;/.zip/p&apos; zip.txt</div><div class="line">bzip2</div><div class="line">bunzip</div><div class="line">gzip</div><div class="line">gunzip</div><div class="line">unzip</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的例子中<code>.zip</code>表示最少得匹配4个字符，其中第一个可以是任意字符，后面三个必须是<code>zip</code>。所以最后一行没有匹配成功，其他则都匹配成功。</p>
+<h1 id="2-5-字符组"><a href="#2-5-字符组" class="headerlink" title="2.5 字符组"></a>2.5 字符组</h1><p>特殊字符点号在匹配某个位置上的任意字符时很有效，但是如果想限制字符的范围的时候就没有那么给力了。但是正则表达式中的<code>字符组(character class)</code>可以用来限定待匹配的字符是一组字符中任意一个。如果字符组中的某个字符出现在数据流中则匹配成功。<br>使用方括号来定义一个字符组。方括号中的字符是你希望匹配的字符，然后你就可以使用整个组来匹配字符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;[bg]zip&apos; zip.txt</div><div class="line">bzip2</div><div class="line">gzip</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的模式匹配中的方括号就是字符组，只要匹配到其中的任何一个字符都会匹配成功。这个匹配模式可以匹配<code>bzip</code>和<code>gzip</code>。字符组中的位置必须要有其中的一个字符出现才能匹配成功。字符组中不仅能使用字符，也可以使用数字。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ cat data3.txt</div><div class="line">This is test line0.</div><div class="line">This is test line1.</div><div class="line">This is test line2.</div><div class="line">This is test line3.</div><div class="line">This is a end line.</div><div class="line">$ sed -n &apos;/[12345]/p&apos; data3.txt</div><div class="line">This is test line1.</div><div class="line">This is test line2.</div><div class="line">This is test line3.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>这个正则表达式模式匹配数据行中有数字<code>0</code>,<code>1</code>,<code>2</code>,<code>3</code>,<code>4</code>,<code>5</code>的行。其他数字以及没有数字的行都会被过滤。<br>可以讲字符组组合在一起以检查特定的字符序列是否符合某种格式：比如电话号码和邮编。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">cat data4.txt</div><div class="line">606333</div><div class="line">462018</div><div class="line">2230011</div><div class="line">4353</div><div class="line">51900</div><div class="line">$ sed -n &apos;</div><div class="line">&gt; /[0123456789][0123456789][0123456789][0123456789][0123456789][0123456789]/</div><div class="line">&gt; &apos; data4.txt</div><div class="line">606333</div><div class="line">462018</div><div class="line">2230011</div></pre></td></tr></table></figure>
+<p>上面的例子成功的过滤了<code>6</code>位数以下的邮编，但是它也让<code>7</code>位数的邮编通过了模式匹配。正则表达式只有在文本流中匹配到了<strong>最小</strong>的模式字符串就匹配成功，上面的例子中<code>7</code>位数字中的前<code>6</code>位已经匹配成功，则整行文本都会匹配成功。如果想只匹配长度为6个数字的邮编则可以使用行首行尾限定符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;</div><div class="line">&gt; /^[0123456789][0123456789][0123456789][0123456789][0123456789][0123456789]$/</div><div class="line">&gt; &apos; data4.txt</div><div class="line">606333</div><div class="line">462018</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="2-6-区间"><a href="#2-6-区间" class="headerlink" title="2.6 区间"></a>2.6 区间</h1><p>上面的例子只是匹配6个数字的邮编，如果我们想匹配11位的移动手机号码，如果按照上面的方式…:( 。好在有一种可以方式可以避免写那么多字母和数字。这就是<strong>区间</strong>，只要在方括号的开始和结束指定一个字符，中间使用破折号分隔这两个字符就可以了。现在可以优化下上面的邮编的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;</div><div class="line">&gt; /^[0-9][0-9][0-9][0-9][0-9][0-9]$/</div><div class="line">&gt; &apos; data4.txt</div><div class="line">606333</div><div class="line">462018</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>这个模式和上面的是一样的，只能匹配6位数字。同样的方法也使用于字母字符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;/[c-h]at/p&apos; data5.txt</div><div class="line">The cat is sleeping.</div><div class="line">That is a very nice hat.</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>上面的例子中<code>[c-h]</code>匹配<code>c</code>和<code>h</code>之间的所有字母。还可以在单个字符组中指定多个字符区间：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;/[c-hx-z]at/p&apos; data5.txt</div><div class="line">The cat is sleeping.</div><div class="line">That is a very nice hat.</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="2-7-排除型字符组"><a href="#2-7-排除型字符组" class="headerlink" title="2.7 排除型字符组"></a>2.7 排除型字符组</h1><p>在正则表达式中我们也可以反转字符组的作用。就是匹配不在字符组中的字符。在字符组的前面加上<code>^</code>，就可以匹配字符组之外的字符了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sed -n &apos;/[^c-h]at/p&apos; data5.txt</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>通过排除型字符组，可以匹配除了<code>c</code>和<code>h</code>之间的所有字符。</p>
+<h1 id="2-8-特殊的字符组"><a href="#2-8-特殊的字符组" class="headerlink" title="2.8 特殊的字符组"></a>2.8 特殊的字符组</h1><p>除了自己定义的字符组之外，<code>BRE</code>还包含了一些特殊的字符组，可以用来匹配特定类型的字符。</p>
+<table>
+<thead>
+<tr>
+<th>组</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[[:alpha:]]</td>
+<td>匹配任意字母字符，不管是大写还是小写</td>
+</tr>
+<tr>
+<td>[[:alnum:]]</td>
+<td>匹配任意字母数字字符0~9、A~Z或a~z</td>
+</tr>
+<tr>
+<td>[[:blank:]]</td>
+<td>匹配空格或制表符</td>
+</tr>
+<tr>
+<td>[[:digit:]]</td>
+<td>匹配0~9之间的数字</td>
+</tr>
+<tr>
+<td>[[:lower:]]</td>
+<td>匹配小写字母字符a~z</td>
+</tr>
+<tr>
+<td>[[:print:]]</td>
+<td>匹配任意可打印字符</td>
+</tr>
+<tr>
+<td>[[:punct:]]</td>
+<td>匹配标点符号</td>
+</tr>
+<tr>
+<td>[[:space:]]</td>
+<td>匹配任意空白字符：空格、制表符、NL、FF、VT和CR</td>
+</tr>
+<tr>
+<td>[[:upper:]]</td>
+<td>匹配任意大写字母字符A~Z</td>
+</tr>
+</tbody>
+</table>
+<p>可以在正则表达式中将特殊表达式当作普通字符组使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;abc&quot; | sed -n &apos;/[[:digit:]]/p&apos; </div><div class="line">$</div><div class="line">$ echo &quot;abc&quot; | sed -n &apos;/[[:alpha:]]/p&apos;</div><div class="line">abc</div><div class="line">$ echo &quot;abc123&quot; | sed -n &apos;/[[:digit:]]/p&apos;</div><div class="line">abc123</div><div class="line">$ echo &quot;This is, a test&quot; | sed -n &apos;/[[:punct:]]/p&apos;</div><div class="line">This is, a test</div><div class="line">$ echo &quot;This is a test&quot; | sed -n &apos;/[[:punct:]]/p&apos;</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="2-9-星号"><a href="#2-9-星号" class="headerlink" title="2.9 星号"></a>2.9 星号</h1><p>在字符后面放置星号表面前面的字符必须在模式匹配中出现0次或多次。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;k&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">k</div><div class="line">$ echo &quot;ok&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">ok</div><div class="line">$ echo &quot;oooook&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">oooook</div><div class="line">$</div></pre></td></tr></table></figure>
+<p><code>o*</code>表示模式中可以有0个<code>o</code>,1个<code>o</code>,或者多个<code>o</code>。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/02/24/Linux-find基础/" class="next">NEXT</a></div><div data-thread-key="2017/03/01/正则表达式/" data-title="正则表达式" data-url="http://guopp.me/2017/03/01/正则表达式/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2015 - 2017 <a href="http://guopp.me">guopp</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>

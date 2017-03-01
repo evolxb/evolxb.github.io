@@ -274,7 +274,7 @@
 <p>上面的命令用于输出当前目录下所有的<code>pdf</code>文件详情。当使用<code>-exec</code>时，每找到一个匹配就会执行一次<code>-exec</code>后面的命令。有时候我们可能希望将<code>find</code>的结果作为一个整体然后再运行额外的命令，这个时候就可以使用外部命令<code>xargs</code>。<code>xargs</code>从标准输入接受输入，并把输入转换为一个特定命令的参数列表，这样命令就不用每匹配到一个文件或目录就执行一次。</p>
 <p><code>find ~ type f -name &quot;*.pdf&quot; | xargs ls -l</code></p>
 <p>因为<code>xargs</code>接受标准输入，所以把<code>find</code>的结果用管道(<code>pipe</code>)到<code>xargs</code>的输入，<code>xargs</code>会把输入构造为<code>ls</code>的参数列表，然后执行<code>ls</code>命令。这种方式比<code>-exec</code>方式快很多，<code>ls</code>执行的次数远远小于<code>-exec</code>的匹配到文件就执行一次命令。<br><code>xargs</code>后面的命令并不是只执行一次，这取决于输入的参数的个数，如果超过了<code>bash</code>能够处理的最大长度，<code>xargs</code>会使用最大的参数长度执行后面的命令，然后重复这个过程，直到所有的输入都执行完。</p>
-</div></article></div></section><footer><div class="paginator"><a href="/2017/02/22/sed基础/" class="next">下一篇</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+</div></article></div></section><footer><div class="paginator"><a href="/2017/03/01/正则表达式/" class="prev">PREV</a><a href="/2017/02/22/sed基础/" class="next">NEXT</a></div><div data-thread-key="2017/02/24/Linux-find基础/" data-title="Linux find基础" data-url="http://guopp.me/2017/02/24/Linux-find基础/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
