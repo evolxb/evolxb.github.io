@@ -100,6 +100,48 @@
 <h1 id="2-9-星号"><a href="#2-9-星号" class="headerlink" title="2.9 星号"></a>2.9 星号</h1><p>在字符后面放置星号表面前面的字符必须在模式匹配中出现0次或多次。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;k&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">k</div><div class="line">$ echo &quot;ok&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">ok</div><div class="line">$ echo &quot;oooook&quot; | sed -n &apos;/o*k/p&apos;</div><div class="line">oooook</div><div class="line">$</div></pre></td></tr></table></figure>
 <p><code>o*</code>表示模式中可以有0个<code>o</code>,1个<code>o</code>,或者多个<code>o</code>。</p>
+<h1 id="3-扩展正则表达式"><a href="#3-扩展正则表达式" class="headerlink" title="3. 扩展正则表达式"></a>3. 扩展正则表达式</h1><p><code>POSIX ERE</code>模式包括了<code>BRE</code>而且还提供了一些额外的特殊符号。下面来介绍<code>ERE</code>模式中剩下的特殊符号。</p>
+<h1 id="3-1-问号"><a href="#3-1-问号" class="headerlink" title="3.1 问号"></a>3.1 问号</h1><p>问号类似于星号，但是问号和星号又不同。问号表示前面的字符只能出现<code>0</code>次或<code>1</code>次，不能是其他次数。就是说问号前面的字符要么不出现，要么只出现一次，其他情况都会匹配失败。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;ct&quot; | gawk &apos;/ca?t/&#123;print $0&#125;&apos;</div><div class="line">ct</div><div class="line">$ echo &quot;cat&quot; | gawk &apos;/ca?t/&#123;print $0&#125;&apos;</div><div class="line">cat</div><div class="line">$ echo &quot;caat&quot; | gawk &apos;/ca?t/&#123;print $0&#125;&apos;</div><div class="line">$</div><div class="line">$ echo &quot;caaat&quot; | gawk &apos;/ca?t/&#123;print $0&#125;&apos;</div><div class="line">$</div></pre></td></tr></table></figure>
+<p><code>?</code>表示前面的字符只能出现<code>0</code>次或<code>1</code>次，其他情况都不会匹配成功。<code>?</code>也可以和字符组一起使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;ct&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">ct</div><div class="line">$ echo &quot;cat&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">cat</div><div class="line">$ echo &quot;cut&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">cut</div><div class="line">$ echo &quot;cot&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">$</div><div class="line">$ echo &quot;caut&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">$</div><div class="line">$ echo &quot;caet&quot; | gawk &apos;/c[au]?t/&#123;print $0&#125;&apos;</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="3-2-加号"><a href="#3-2-加号" class="headerlink" title="3.2 加号"></a>3.2 加号</h1><p><code>+</code>和<code>*</code>、<code>?</code>类似，加号表示前面的字符最少出现<code>1</code>次。如果加号前面的字符没有出现则匹配失败。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;ct&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">$</div><div class="line">$ echo &quot;cat&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">cat</div><div class="line">$ echo &quot;cut&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">$</div><div class="line">$ echo &quot;caat&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">caat</div><div class="line">$ echo &quot;caet&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">$</div><div class="line">$ echo &quot;caaat&quot; | gawk &apos;/ca+t/&#123;print $0&#125;&apos; </div><div class="line">caaat</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>如果<code>a</code>字符没有出现则匹配失败。<code>+</code>也可以作用于字符组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;ct&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">$</div><div class="line">$ echo &quot;cat&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">cat</div><div class="line">$ echo &quot;cut&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">cut</div><div class="line">$ echo &quot;caat&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">caat</div><div class="line">$ echo &quot;caut&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">caut</div><div class="line">$ echo &quot;caaaaut&quot; | gawk &apos;/c[au]+t/&#123;print $0&#125;&apos;</div><div class="line">caaaaut</div><div class="line">$</div></pre></td></tr></table></figure>
+<h1 id="3-3-花括号"><a href="#3-3-花括号" class="headerlink" title="3.3 花括号"></a>3.3 花括号</h1><p><code>ERE</code>中的花括号允许前面的模式可以重复出现的次数。这通过称为<strong>间隔(<code>interval</code>)</strong>。可以用四种方式来指定：</p>
+<table>
+<thead>
+<tr>
+<th>限定符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{n}</td>
+<td>匹配前面的元素，如果它确切地出现了 n 次。</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>匹配前面的元素，如果它至少出现了 n 次，但是不多于 m 次。</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>匹配前面的元素，如果它出现了 n 次或多于 n 次。</td>
+</tr>
+<tr>
+<td>{,m}</td>
+<td>匹配前面的元素，如果它出现的次数不多于 m 次。</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;ct&quot; | grep -E &apos;ca&#123;1&#125;t&apos;</div><div class="line">$</div><div class="line">$ echo &quot;cat&quot; | grep -E &apos;ca&#123;1&#125;t&apos;</div><div class="line">cat</div><div class="line">$ echo &quot;caat&quot; | grep -E &apos;ca&#123;1&#125;t&apos;</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>设置间隔为<code>1</code>则表示<code>a</code>必须且只能出现一次，其他情况都不会匹配成功。<code>grep -E</code>可以识别<code>ERE</code>模式下的正则表达式。也可以单独设置重复出现的最少次数和最大次数，也可以设置一起设置最小和最大次数。</p>
+<h1 id="3-4-Alternation-交替"><a href="#3-4-Alternation-交替" class="headerlink" title="3.4 Alternation(交替)"></a>3.4 Alternation(交替)</h1><p>管道符号允许你在检查正则表达式时，用逻辑<code>OR</code>方式指定多个模式。如果匹配了其中任何一个单独的模式则整个模式匹配成功，如果没有模式匹配上，则数据流匹配失败。使用管道符号的格式如下：</p>
+<p><code>expr1 | expr2 | ...</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ echo &quot;There is a dog.&quot; | gawk &apos;/cat|dog/&#123;print $0&#125;&apos;</div><div class="line">There is a dog.</div><div class="line">$ echo &quot;There is a cat.&quot; | gawk &apos;/cat|dog/&#123;print $0&#125;&apos;</div><div class="line">There is a cat.</div><div class="line">$ echo &quot;He has a cat&quot; | gawk &apos;/[ch]at|dog/&#123;print $0&#125;&apos;</div><div class="line">He has a cat</div><div class="line">$</div></pre></td></tr></table></figure>
+<p>管道符号两侧的正则表达式可以采用任何形式的正则表达式来定义文本(包括字符组)。</p>
 </div></article></div></section><footer><div class="paginator"><a href="/2017/02/24/Linux-find基础/" class="next">NEXT</a></div><div data-thread-key="2017/03/01/正则表达式/" data-title="正则表达式" data-url="http://guopp.me/2017/03/01/正则表达式/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
