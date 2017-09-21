@@ -27,6 +27,11 @@
 <h3 id="Run-loop"><a href="#Run-loop" class="headerlink" title="Run loop"></a>Run loop</h3><p><code>run loop</code> 管理线程上的异步事件。<code>run loop</code> 通过监听线程上的多个 <code>source</code>, 当事件到达时系统唤醒线程然后分配事件到 <code>run loop</code>, 然后调用事件的 <code>handle</code> 函数。没有事件时，<code>run loop</code> 让线程休眠。</p>
 <p>创建线程并不需要强制创建相应的 <code>run loop</code>。 当线程的入口函数执行完成，如果没有 <code>run loop</code>，线程就会结束，资源会被系统回收。run loop 只是使用很少的资源来实现线程的长时间运行。没有事件时，线程会休眠，节省系统资源。</p>
 <p>主线程的 <code>run loop</code> 已经被系统配置好。 只需要在其他线程中获取 <code>run loop</code>，注册事件回调，然后执行 run loop 就可以在其他线程中配置好 <code>run loop</code>。 </p>
+<h3 id="同步工具"><a href="#同步工具" class="headerlink" title="同步工具"></a>同步工具</h3><p>多线程编程的最大困难就是资源竞争。可以使用 <code>lock</code>、<code>conditions</code>、<code>atomic operations</code> 来通过对共享资源的访问。</p>
+<ul>
+<li><code>Lock</code>: 共享资源一次只被一个线程访问。</li>
+<li><code>Conditions</code>: 阻塞一个线程知道条件变为 <code>true</code></li>
+</ul>
 </div></article></div></section><footer><div class="paginator"><a href="/2017/03/01/正则表达式/" class="next">NEXT</a></div><div data-thread-key="2017/09/21/about-thread/" data-title="关于线程" data-url="http://guopp.me/2017/09/21/about-thread/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
