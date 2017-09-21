@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-09-21T07:26:43.000Z</updated>
+  <updated>2017-09-21T07:30:21.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>about_thread</title>
+    <title>关于线程</title>
     <link href="http://guopp.me/2017/09/21/about-thread/"/>
     <id>http://guopp.me/2017/09/21/about-thread/</id>
     <published>2017-09-21T06:23:17.000Z</published>
-    <updated>2017-09-21T07:26:43.000Z</updated>
+    <updated>2017-09-21T07:30:21.000Z</updated>
     
     <content type="html"><![CDATA[<p>很多年以前，电脑的 cpu 只有一个核，电脑的性能取决于单核 cpu 的频率，频率越高性能越好。当单核 cpu 的频率到达物理极限时，想要提高电脑性能只能开发多核 cpu 。多核 cpu 可以同时在多个核心上执行任务，大大提高了电脑的性能。</p>
 <h2 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h2><p>线程是实现程序并发运行的轻量级方式。在系统层面上，程序都是在多个核心上并行执行的。但是,程序内部也会有多个线程在同时执行不同的任务。系统根据相关的调度算法，分配这些线程在不同的 cpu 上执行，并在合适的时候让当前执行的线程休眠或者退出，让优先级更高的线程执行。</p>
@@ -28,11 +28,11 @@
 <h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><ul>
 <li><code>thread</code>: 一段独立执行的代码</li>
 <li><code>process</code>: 一个运行着多个线程的程序</li>
-<li><p><code>task</code>: 需要执行的任务</p>
+<li><code>task</code>: 需要执行的任务</li>
+</ul>
 <h2 id="线程的替代技术"><a href="#线程的替代技术" class="headerlink" title="线程的替代技术"></a>线程的替代技术</h2><p>线程是相当底层和复杂的技术。如果没有完全理解线程的概念就使用线程，就会遇到很多同步问题，严重情况下可能导致应用程序崩溃。创建线程也会消耗计算机的资源。下面有几种方式也能实现并发，但是相比线程来说更高抽象。</p>
-</li>
-<li><p><code>Operation objects</code>: 将线程管理交给系统，只需要关注任务本身。</p>
-</li>
+<ul>
+<li><code>Operation objects</code>: 将线程管理交给系统，只需要关注任务本身。</li>
 <li><code>Grand Central Dispatch(GCD)</code>: 只需要把任务提交到 <code>gcd queue</code> 上，<code>queue</code> 会使用线程池中的线程执行任务.</li>
 <li><code>Idle-time notifications</code>: 使用 <code>NSPostWhenIdle</code> 选项在默认的 <code>NSNotificationQueue</code> 上发送一个空闲通知， 此时会进入通知队列中，当 <code>run loop</code> 空闲时， 这个通知就会被分发到通知中心。</li>
 <li><code>Asynchronous functions</code>: 系统提供了很多的异步函数，编码时尽量选择这些异步函数。这些 <code>API</code> 会使用系统的守护进程来创建线程来执行任务，然后返回结果。 </li>
