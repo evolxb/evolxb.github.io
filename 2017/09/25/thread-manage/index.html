@@ -52,7 +52,30 @@
 <h4 id="保护-Cocoa-Frameworks"><a href="#保护-Cocoa-Frameworks" class="headerlink" title="保护 Cocoa Frameworks"></a>保护 <code>Cocoa Frameworks</code></h4><p>因为 <code>Cocoa Frameworks</code> 内部使用锁和其他同步机制来保持代码的准确。但是锁和同步机制会导致代码性能下降，所以 <code>Cooca</code> 在接收到程序变成多线程通知的情况下才会创建这些锁。如果使用 <code>POSIX</code> 线程，那么程序不会发出这样的通知。这样程序就的状态就是不确定的。</p>
 <p>为了让 <code>Cocoa</code> 知道现在已经是多线程状态，可以使用 <code>NSThread</code> 创建一个什么都不做的线程，然后马上退出。这样 <code>Cooca</code> 就知道程序已经处于多线程状态下了。 </p>
 <p>可以使用 <code>NSThread</code> 的 <code>isMultiThreaded</code> 来检查是否处于多现场状态。</p>
-</div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">下一篇</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+<h3 id="混合-POSIX-和-Cocoa-锁"><a href="#混合-POSIX-和-Cocoa-锁" class="headerlink" title="混合 POSIX 和 Cocoa 锁"></a>混合 <code>POSIX</code> 和 <code>Cocoa</code> 锁</h3><p>在应用程序中混合使用 <code>POSIX</code> 和 <code>Cocoa</code> 锁是安全的，因为后者实质上只是对前者的封装。但不能用一种 <code>API</code> 的方法操作另一种 <code>API</code> 创建的锁。比如不能使用 <code>NSLock</code> 对象操作 <code>pthread_mutex_init</code> 函数创建的互斥锁，反之亦然。</p>
+<h2 id="配置线程属性"><a href="#配置线程属性" class="headerlink" title="配置线程属性"></a>配置线程属性</h2><p>创建完线程就可以配置线程的属性了。</p>
+<h3 id="配置栈大小"><a href="#配置栈大小" class="headerlink" title="配置栈大小"></a>配置栈大小</h3><p>创建线程时系统会在进程的内存空间分配一段内存作为线程的栈空间。可以在创建线程之前制定栈空间的大小。</p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>选项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cocoa</td>
+<td>使用 <code>NSThread</code> 的 <code>setStackSize:</code> 设置栈大小</td>
+</tr>
+<tr>
+<td>POSIX</td>
+<td>创建 <code>pthread_attr_t</code> 结构体，使用 <code>pthread_attr_setstacksize</code> 改变栈大小，然后把创建的结构体传入 <code>pthread_create</code> 函数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="配置线程本地存储"><a href="#配置线程本地存储" class="headerlink" title="配置线程本地存储"></a>配置线程本地存储</h3><p>每个线程都维护着一个键值对的字典。你可以在线程的生命周期中使用此字典保存数据。</p>
+<p><code>Cocoa</code> 和 <code>POSIX</code> 使用不同的 <code>API</code> 来操作此字典，所以不用混用。在 <code>Cocoa</code> 中使用 <code>NSThread</code> 的 <code>threadDictionary</code> 方法来获取一个 <code>NSMutableDictionary</code> 的对象。在 <code>POSIX</code> 中使用 <code>pthread_setspecific</code> 和 <code>pthread_getspecific</code> 来获取建和值。</p>
+<h3 id="设置线程的-detached-状态"><a href="#设置线程的-detached-状态" class="headerlink" title="设置线程的 detached 状态"></a>设置线程的 <code>detached</code> 状态</h3></div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">下一篇</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-09-25T08:38:32.000Z</updated>
+  <updated>2017-09-25T09:13:21.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://guopp.me/2017/09/25/thread-manage/"/>
     <id>http://guopp.me/2017/09/25/thread-manage/</id>
     <published>2017-09-25T02:16:30.000Z</published>
-    <updated>2017-09-25T08:38:32.000Z</updated>
+    <updated>2017-09-25T09:13:21.000Z</updated>
     
     <content type="html"><![CDATA[<p>iOS 和 OS X 中每个应用程序(进程)都是由许多线程组成。每个程序都从一个线程开始运行，叫做主线程，然后派生出子线程。进程中的每个线程都有自己的运行堆栈，并由内核调度执行。进程里面的线程都共享同样的虚拟内存空间，所有它们有和进程相同的访问权限，而且可以相互之间通讯。 又由于线程也是独立的实体(一段独立的代码路径), 所以它可以和其他进程通讯。 </p>
 <h2 id="线程消耗"><a href="#线程消耗" class="headerlink" title="线程消耗"></a>线程消耗</h2><p>线程也是有使用成本的，在内存和性能方面。 每个线程都需要在内核内存空间和进程内核空间分配内存。内核会使用联动(wired)内存来存储管理和调度线程的数据结构，线程的堆栈和相关的数据存储在进程的内存空间。大部分的数据结构都是在线程初始化的时候就会创建好，由于需要与内核交互，这个过程可能比较昂贵。</p>
@@ -76,7 +76,30 @@
 <h4 id="保护-Cocoa-Frameworks"><a href="#保护-Cocoa-Frameworks" class="headerlink" title="保护 Cocoa Frameworks"></a>保护 <code>Cocoa Frameworks</code></h4><p>因为 <code>Cocoa Frameworks</code> 内部使用锁和其他同步机制来保持代码的准确。但是锁和同步机制会导致代码性能下降，所以 <code>Cooca</code> 在接收到程序变成多线程通知的情况下才会创建这些锁。如果使用 <code>POSIX</code> 线程，那么程序不会发出这样的通知。这样程序就的状态就是不确定的。</p>
 <p>为了让 <code>Cocoa</code> 知道现在已经是多线程状态，可以使用 <code>NSThread</code> 创建一个什么都不做的线程，然后马上退出。这样 <code>Cooca</code> 就知道程序已经处于多线程状态下了。 </p>
 <p>可以使用 <code>NSThread</code> 的 <code>isMultiThreaded</code> 来检查是否处于多现场状态。</p>
-]]></content>
+<h3 id="混合-POSIX-和-Cocoa-锁"><a href="#混合-POSIX-和-Cocoa-锁" class="headerlink" title="混合 POSIX 和 Cocoa 锁"></a>混合 <code>POSIX</code> 和 <code>Cocoa</code> 锁</h3><p>在应用程序中混合使用 <code>POSIX</code> 和 <code>Cocoa</code> 锁是安全的，因为后者实质上只是对前者的封装。但不能用一种 <code>API</code> 的方法操作另一种 <code>API</code> 创建的锁。比如不能使用 <code>NSLock</code> 对象操作 <code>pthread_mutex_init</code> 函数创建的互斥锁，反之亦然。</p>
+<h2 id="配置线程属性"><a href="#配置线程属性" class="headerlink" title="配置线程属性"></a>配置线程属性</h2><p>创建完线程就可以配置线程的属性了。</p>
+<h3 id="配置栈大小"><a href="#配置栈大小" class="headerlink" title="配置栈大小"></a>配置栈大小</h3><p>创建线程时系统会在进程的内存空间分配一段内存作为线程的栈空间。可以在创建线程之前制定栈空间的大小。</p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>选项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cocoa</td>
+<td>使用 <code>NSThread</code> 的 <code>setStackSize:</code> 设置栈大小</td>
+</tr>
+<tr>
+<td>POSIX</td>
+<td>创建 <code>pthread_attr_t</code> 结构体，使用 <code>pthread_attr_setstacksize</code> 改变栈大小，然后把创建的结构体传入 <code>pthread_create</code> 函数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="配置线程本地存储"><a href="#配置线程本地存储" class="headerlink" title="配置线程本地存储"></a>配置线程本地存储</h3><p>每个线程都维护着一个键值对的字典。你可以在线程的生命周期中使用此字典保存数据。</p>
+<p><code>Cocoa</code> 和 <code>POSIX</code> 使用不同的 <code>API</code> 来操作此字典，所以不用混用。在 <code>Cocoa</code> 中使用 <code>NSThread</code> 的 <code>threadDictionary</code> 方法来获取一个 <code>NSMutableDictionary</code> 的对象。在 <code>POSIX</code> 中使用 <code>pthread_setspecific</code> 和 <code>pthread_getspecific</code> 来获取建和值。</p>
+<h3 id="设置线程的-detached-状态"><a href="#设置线程的-detached-状态" class="headerlink" title="设置线程的 detached 状态"></a>设置线程的 <code>detached</code> 状态</h3>]]></content>
     
     <summary type="html">
     
