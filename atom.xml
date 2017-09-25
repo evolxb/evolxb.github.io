@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-09-21T09:47:38.000Z</updated>
+  <updated>2017-09-25T02:17:41.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -16,11 +16,27 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>线程管理</title>
+    <link href="http://guopp.me/2017/09/25/thread-manage/"/>
+    <id>http://guopp.me/2017/09/25/thread-manage/</id>
+    <published>2017-09-25T02:16:30.000Z</published>
+    <updated>2017-09-25T02:17:41.000Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+      <category term="thread," scheme="http://guopp.me/tags/thread/"/>
+    
+  </entry>
+  
+  <entry>
     <title>关于线程</title>
     <link href="http://guopp.me/2017/09/21/about-thread/"/>
     <id>http://guopp.me/2017/09/21/about-thread/</id>
     <published>2017-09-21T06:23:17.000Z</published>
-    <updated>2017-09-21T09:47:38.000Z</updated>
+    <updated>2017-09-25T03:20:06.000Z</updated>
     
     <content type="html"><![CDATA[<p>很多年以前，电脑的 cpu 只有一个核，电脑的性能取决于单核 cpu 的频率，频率越高性能越好。当单核 cpu 的频率到达物理极限时，想要提高电脑性能只能开发多核 cpu 。多核 cpu 可以同时在多个核心上执行任务，大大提高了电脑的性能。</p>
 <h2 id="什么是线程"><a href="#什么是线程" class="headerlink" title="什么是线程"></a>什么是线程</h2><p>线程是实现程序并发运行的轻量级方式。在系统层面上，程序都是在多个核心上并行执行的。但是,程序内部也会有多个线程在同时执行不同的任务。系统根据相关的调度算法，分配这些线程在不同的 cpu 上执行，并在合适的时候让当前执行的线程休眠或者退出，让优先级更高的线程执行。</p>
@@ -77,7 +93,7 @@
 <p>如果想要通知其他线程有异常，应该先捕获异常，然后给其他线程发消息。异常被捕获后可能会继续执行，或者等待命令，或者退出。</p>
 <p><code>@synchronized</code> 会自动捕获和处理异常。</p>
 <h3 id="终止线程"><a href="#终止线程" class="headerlink" title="终止线程"></a>终止线程</h3><p>在线程的入口函数执行完成后线程就会退出。如果使用其他方式提前终止线程，线程来不及清理打开的文件，或其他资源就会导致内存泄漏。</p>
-<h3 id="Library-中的线程安全"><a href="#Library-中的线程安全" class="headerlink" title="Library 中的线程安全"></a>Library 中的线程安全</h3><p>开发第三方库的时候就应该假设程序是多线程的。应该在关键位置</p>
+<h3 id="Library-中的线程安全"><a href="#Library-中的线程安全" class="headerlink" title="Library 中的线程安全"></a>Library 中的线程安全</h3><p>开发第三方库的时候就应该假设程序是多线程的。应该在关键位置加锁。可以通过 <code>NSWillBecomeMultiThreadedNotification</code> 来监听程序是否是多线程环境。 </p>
 ]]></content>
     
     <summary type="html">
