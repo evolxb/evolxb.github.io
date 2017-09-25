@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guopp.me/"/>
-  <updated>2017-09-25T08:27:33.000Z</updated>
+  <updated>2017-09-25T08:38:32.000Z</updated>
   <id>http://guopp.me/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://guopp.me/2017/09/25/thread-manage/"/>
     <id>http://guopp.me/2017/09/25/thread-manage/</id>
     <published>2017-09-25T02:16:30.000Z</published>
-    <updated>2017-09-25T08:27:33.000Z</updated>
+    <updated>2017-09-25T08:38:32.000Z</updated>
     
     <content type="html"><![CDATA[<p>iOS 和 OS X 中每个应用程序(进程)都是由许多线程组成。每个程序都从一个线程开始运行，叫做主线程，然后派生出子线程。进程中的每个线程都有自己的运行堆栈，并由内核调度执行。进程里面的线程都共享同样的虚拟内存空间，所有它们有和进程相同的访问权限，而且可以相互之间通讯。 又由于线程也是独立的实体(一段独立的代码路径), 所以它可以和其他进程通讯。 </p>
 <h2 id="线程消耗"><a href="#线程消耗" class="headerlink" title="线程消耗"></a>线程消耗</h2><p>线程也是有使用成本的，在内存和性能方面。 每个线程都需要在内核内存空间和进程内核空间分配内存。内核会使用联动(wired)内存来存储管理和调度线程的数据结构，线程的堆栈和相关的数据存储在进程的内存空间。大部分的数据结构都是在线程初始化的时候就会创建好，由于需要与内核交互，这个过程可能比较昂贵。</p>
@@ -72,7 +72,11 @@
 <h3 id="使用NSObject来产生线程"><a href="#使用NSObject来产生线程" class="headerlink" title="使用NSObject来产生线程"></a>使用<code>NSObject</code>来产生线程</h3><p>可以使用 <code>NSObject</code> 实例的 <code>performSelectorInBackground:withObject:</code> 来创建线程：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[myObj performSelectorInBackground:@selector(doSomething) withObject:nil];</div></pre></td></tr></table></figure>
 <p>创建的线程入口函数是 <code>doSomething</code>。新创建的现场会立即运行。可以在入口函数中继续配置线程,比如设置自动释放池和设置 <code>run loop</code>。</p>
-<h3 id="在-Cocoa-种使用-POSIX-线程"><a href="#在-Cocoa-种使用-POSIX-线程" class="headerlink" title="在 Cocoa 种使用 POSIX 线程"></a>在 <code>Cocoa</code> 种使用 <code>POSIX</code> 线程</h3>]]></content>
+<h3 id="在-Cocoa-种使用-POSIX-线程"><a href="#在-Cocoa-种使用-POSIX-线程" class="headerlink" title="在 Cocoa 种使用 POSIX 线程"></a>在 <code>Cocoa</code> 种使用 <code>POSIX</code> 线程</h3><p>在 <code>Cocoa</code> 中使用 <code>POSIX</code> 线程需要注意它们之间的交互，并遵守以下原则。</p>
+<h4 id="保护-Cocoa-Frameworks"><a href="#保护-Cocoa-Frameworks" class="headerlink" title="保护 Cocoa Frameworks"></a>保护 <code>Cocoa Frameworks</code></h4><p>因为 <code>Cocoa Frameworks</code> 内部使用锁和其他同步机制来保持代码的准确。但是锁和同步机制会导致代码性能下降，所以 <code>Cooca</code> 在接收到程序变成多线程通知的情况下才会创建这些锁。如果使用 <code>POSIX</code> 线程，那么程序不会发出这样的通知。这样程序就的状态就是不确定的。</p>
+<p>为了让 <code>Cocoa</code> 知道现在已经是多线程状态，可以使用 <code>NSThread</code> 创建一个什么都不做的线程，然后马上退出。这样 <code>Cooca</code> 就知道程序已经处于多线程状态下了。 </p>
+<p>可以使用 <code>NSThread</code> 的 <code>isMultiThreaded</code> 来检查是否处于多现场状态。</p>
+]]></content>
     
     <summary type="html">
     

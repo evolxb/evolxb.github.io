@@ -48,7 +48,11 @@
 <h3 id="使用NSObject来产生线程"><a href="#使用NSObject来产生线程" class="headerlink" title="使用NSObject来产生线程"></a>使用<code>NSObject</code>来产生线程</h3><p>可以使用 <code>NSObject</code> 实例的 <code>performSelectorInBackground:withObject:</code> 来创建线程：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[myObj performSelectorInBackground:@selector(doSomething) withObject:nil];</div></pre></td></tr></table></figure>
 <p>创建的线程入口函数是 <code>doSomething</code>。新创建的现场会立即运行。可以在入口函数中继续配置线程,比如设置自动释放池和设置 <code>run loop</code>。</p>
-<h3 id="在-Cocoa-种使用-POSIX-线程"><a href="#在-Cocoa-种使用-POSIX-线程" class="headerlink" title="在 Cocoa 种使用 POSIX 线程"></a>在 <code>Cocoa</code> 种使用 <code>POSIX</code> 线程</h3></div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">NEXT</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+<h3 id="在-Cocoa-种使用-POSIX-线程"><a href="#在-Cocoa-种使用-POSIX-线程" class="headerlink" title="在 Cocoa 种使用 POSIX 线程"></a>在 <code>Cocoa</code> 种使用 <code>POSIX</code> 线程</h3><p>在 <code>Cocoa</code> 中使用 <code>POSIX</code> 线程需要注意它们之间的交互，并遵守以下原则。</p>
+<h4 id="保护-Cocoa-Frameworks"><a href="#保护-Cocoa-Frameworks" class="headerlink" title="保护 Cocoa Frameworks"></a>保护 <code>Cocoa Frameworks</code></h4><p>因为 <code>Cocoa Frameworks</code> 内部使用锁和其他同步机制来保持代码的准确。但是锁和同步机制会导致代码性能下降，所以 <code>Cooca</code> 在接收到程序变成多线程通知的情况下才会创建这些锁。如果使用 <code>POSIX</code> 线程，那么程序不会发出这样的通知。这样程序就的状态就是不确定的。</p>
+<p>为了让 <code>Cocoa</code> 知道现在已经是多线程状态，可以使用 <code>NSThread</code> 创建一个什么都不做的线程，然后马上退出。这样 <code>Cooca</code> 就知道程序已经处于多线程状态下了。 </p>
+<p>可以使用 <code>NSThread</code> 的 <code>isMultiThreaded</code> 来检查是否处于多现场状态。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">下一篇</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
