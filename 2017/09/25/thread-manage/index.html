@@ -75,7 +75,19 @@
 </table>
 <h3 id="配置线程本地存储"><a href="#配置线程本地存储" class="headerlink" title="配置线程本地存储"></a>配置线程本地存储</h3><p>每个线程都维护着一个键值对的字典。你可以在线程的生命周期中使用此字典保存数据。</p>
 <p><code>Cocoa</code> 和 <code>POSIX</code> 使用不同的 <code>API</code> 来操作此字典，所以不用混用。在 <code>Cocoa</code> 中使用 <code>NSThread</code> 的 <code>threadDictionary</code> 方法来获取一个 <code>NSMutableDictionary</code> 的对象。在 <code>POSIX</code> 中使用 <code>pthread_setspecific</code> 和 <code>pthread_getspecific</code> 来获取建和值。</p>
-<h3 id="设置线程的-detached-状态"><a href="#设置线程的-detached-状态" class="headerlink" title="设置线程的 detached 状态"></a>设置线程的 <code>detached</code> 状态</h3></div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">下一篇</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
+<h3 id="设置线程的-detached-状态"><a href="#设置线程的-detached-状态" class="headerlink" title="设置线程的 detached 状态"></a>设置线程的 <code>detached</code> 状态</h3><p>大多数高级API产生的线程都是分离的。分离线程不需要和程序的其他部分交互，在退出时资源也会被系统回收。 但是非分离的线程需要手动 join，系统才会回收资源。 </p>
+<p>非分离的线程可以看做是线程的子线程，虽然实际上它们是独立运行的，但是它必须 <code>join</code> 到其他线程系统才会回收它的资源。线程在退出时可以给 <code>pthread_exit</code> 函数传入数据，其他现场可以使用 <code>pthread_join</code> 获取数据。</p>
+<p>创建 <code>joinable</code> 线程的唯一方式是使用 <code>POSIX</code>. 在创建线程之前使用 <code>pthread_attr_setdetachstate</code> 设置线程的属性。在线程开始运行后，也可以使用 <code>pthread_detach</code> 可以将线程改为分离现场。</p>
+<h3 id="设置线程优先级"><a href="#设置线程优先级" class="headerlink" title="设置线程优先级"></a>设置线程优先级</h3><p>每个新创建的线程都有一个默认的优先级。内核调度线程运行时会考虑线程的优先级。优先级越高越有可能被优先执行。但是并不是优先级越高执行时间越长。 </p>
+<p>在 <code>Cocoa</code> 中使用 <code>NSThread</code> 的 <code>setThreadPriority:</code> 方法设置优先级。在 <code>POSIX</code> 中使用 <code>pthread_setschedparam</code> 设置优先级。</p>
+<h2 id="编写线程入口函数"><a href="#编写线程入口函数" class="headerlink" title="编写线程入口函数"></a>编写线程入口函数</h2><p>线程的入口函数一般都是初始化数据结构，设置 <code>run loop</code> 然后在线程退出时清除资源。</p>
+<h3 id="创建自动释放池"><a href="#创建自动释放池" class="headerlink" title="创建自动释放池"></a>创建自动释放池</h3><p>创建自动释放池应该是入口函数里面的第一件事。每个 <code>Objective-C</code> 框架的线程都必须有最少一个自动释放池。<br>使用 <code>@autoreleasepool</code> 创建自动释放池比 <code>NSAutoreleasePool</code> 更方便。而且 <code>NSAutoreleasePool</code> 不能在 ARC 下使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (void)myThreadMainRoutine &#123;</div><div class="line">    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // Top-level pool</div><div class="line"></div><div class="line">    // Do thread work here.</div><div class="line"></div><div class="line">    [pool release];</div><div class="line"></div><div class="line">    // Release the objects in the pool.</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为最外层的释放池在线程退出时才会释放里面的对象，所以对某些生产周期比较长的线程应该创建额外的释放池。比如在循环中创建临时的自动释放池。</p>
+<h3 id="设置异常回调"><a href="#设置异常回调" class="headerlink" title="设置异常回调"></a>设置异常回调</h3><p>没被捕获的异常会导致应用崩溃，虽然最好应该在异常发生的地方进行异常处理，但是在线程的入口函数再加上个 try/catch 可以捕获任何未知的错误。</p>
+<h3 id="设置-run-loop"><a href="#设置-run-loop" class="headerlink" title="设置 run loop"></a>设置 run loop</h3><p>创建临时的线程不需要特别的操作，如果想创建长时间运行而且能响应异步事件的线程必须设置线程的 <code>run loop</code>。</p>
+<p><code>OS X</code> 和 <code>iOS</code> 会自动设置主线程的 <code>run loop</code>。但是子线程的 <code>run loop</code> 就需要自己手动配置然后启动它。</p>
+<h3 id="终止线程"><a href="#终止线程" class="headerlink" title="终止线程"></a>终止线程</h3></div></article></div></section><footer><div class="paginator"><a href="/2017/09/21/about-thread/" class="next">NEXT</a></div><div data-thread-key="2017/09/25/thread-manage/" data-title="线程管理" data-url="http://guopp.me/2017/09/25/thread-manage/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"guopp"};
 (function() {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
